@@ -1,0 +1,202 @@
+graph TB
+    subgraph External["🌐 External Systems & Users"]
+        USER[👤 Human Users]
+        EXT_SYS[🏢 Enterprise Systems<br/>EHR, Legal, HR, PM Tools]
+    end
+
+    subgraph MetaLayer["📋 LAYER 8: Meta-Blueprint Constitution"]
+        META[🛡️ Universal Agent Principles<br/>• Safety First<br/>• Transparency<br/>• Privacy & Compliance<br/>• Ethical Guidelines<br/>ALWAYS LOADED]
+    end
+
+    subgraph AgentCore["🤖 AGENT CORE SYSTEM"]
+        
+        subgraph Layer1["⚙️ LAYER 1: Core Agent Orchestration Engine"]
+            LOOP{{"🔄 Agent Loop"}}
+            GATHER[1️⃣ Gather Context]
+            PLAN[2️⃣ Plan Action]
+            ACT[3️⃣ Execute Tools]
+            VERIFY[4️⃣ Self-Verify]
+            ITERATE[5️⃣ Iterate/Adapt]
+            
+            LOOP --> GATHER
+            GATHER --> PLAN
+            PLAN --> ACT
+            ACT --> VERIFY
+            VERIFY --> ITERATE
+            ITERATE -->|Not Complete| GATHER
+            ITERATE -->|Complete| HITL
+        end
+
+        subgraph Layer2["💾 LAYER 2: Memory & Context Management"]
+            WORK_MEM[📝 Working Memory<br/>50K tokens]
+            LONG_MEM[🗄️ Long-Term Memory<br/>Persistent State]
+            CONTEXT[⚖️ Context Budget Manager<br/>200K total / 12K always-loaded]
+            COMPACT[🗜️ Auto-Compaction<br/>When > 80% capacity]
+        end
+
+        subgraph Layer3["🔧 LAYER 3: Tool Use Framework"]
+            TOOL_REG[📚 Tool Registry<br/>MCP-Based]
+            TOOL_DISC[🔍 Tool Discovery]
+            TOOL_EXEC[⚡ Tool Execution]
+            TOOL_VER[✅ Tool Verifier]
+        end
+
+        subgraph Layer4["👁️ LAYER 4: Agent Perceptions"]
+            PUSH[📨 Push: Events/Alerts]
+            PULL[🔎 Pull: Queries/Retrieval]
+        end
+
+        subgraph Layer5["💬 LAYER 5: Agent Interactions"]
+            CONV[💭 Conversational UI]
+            PROACT[💡 Proactive Recommendations]
+            EXPLAIN[📊 Explainability]
+        end
+
+        subgraph Layer7["🧠 LAYER 7: Strategic Knowledge (BluePrints)"]
+            BP_CLINICAL[🏥 Clinical BluePrints]
+            BP_LEGAL[⚖️ Legal BluePrints]
+            BP_PRODUCT[📦 Product BluePrints]
+            BP_CUSTOM[🎯 Custom Domain BluePrints]
+        end
+
+        subgraph Layer6["📖 LAYER 6: Domain Knowledge Base"]
+            POLICIES[📜 Policies]
+            GUIDELINES[📋 Guidelines]
+            PROCEDURES[🔄 Procedures]
+            EXAMPLES[💡 Examples]
+        end
+    end
+
+    subgraph MCPLayer["🔌 MCP Integration Layer"]
+        MCP_CLIENT[🔌 MCP Client<br/>Agent Side]
+        MCP_SERVERS[🖥️ MCP Servers<br/>• EHR Server<br/>• Legal DB Server<br/>• JIRA Server<br/>• SharePoint Server<br/>• Custom Connectors]
+    end
+
+    subgraph Layer9["👥 LAYER 9: Human-in-the-Loop"]
+        HITL{{"🚦 Self-Verification<br/>Passed?"}}
+        TIER1[✅ Tier 1: No Review<br/>Auto-Proceed]
+        TIER2[👀 Tier 2: Passive<br/>Audit Later]
+        TIER3[✋ Tier 3: Active<br/>Approval Required]
+        TIER4[🚨 Tier 4: Critical<br/>Immediate Escalation]
+        
+        HITL -->|Yes, Low Risk| TIER1
+        HITL -->|Yes, Medium Risk| TIER2
+        HITL -->|Yes, High Risk| TIER3
+        HITL -->|No/Critical| TIER4
+    end
+
+    subgraph Layer10["🛡️ LAYER 10: Guardrails & Safety"]
+        SAFETY_INPUT[🔒 Input Validation]
+        SAFETY_EXEC[👮 Execution Monitoring]
+        SAFETY_OUTPUT[🔍 Output Validation]
+        PROMPT_DEF[🛡️ Prompt Injection Defense]
+        AUDIT[📝 Audit Trail]
+    end
+
+    subgraph Layer11["📊 LAYER 11: Evaluation & Observability"]
+        GOLDEN[🏆 Golden Tests]
+        SAFETY_TEST[🧪 Safety Test Suite]
+        REGRESSION[🔄 Regression Tests]
+        PERF[⚡ Performance Benchmarks]
+        REDTEAM[🎯 Red Team Testing]
+        SHADOW[👥 Shadow Testing]
+        METRICS[📈 Metrics Dashboard]
+    end
+
+    subgraph CrossCutting["⚡ Cross-Cutting Concerns"]
+        RBAC[🔐 RBAC & Permissions]
+        CONSENT[📋 Per-Call Consent]
+        ENCRYPTION[🔒 Encryption & PHI Protection]
+        VERSION[📌 Version Control]
+    end
+
+    %% User Interactions
+    USER -->|Request| CONV
+    CONV -->|Response| USER
+    
+    %% Meta-Blueprint Always Loaded
+    META -.->|Governs All| LOOP
+    
+    %% Agent Loop Connections
+    PLAN -->|Consults| Layer7
+    PLAN -->|Consults| Layer6
+    GATHER -->|Reads| WORK_MEM
+    GATHER -->|Reads| LONG_MEM
+    GATHER -->|Uses| Layer4
+    ACT -->|Invokes| Layer3
+    VERIFY -->|Checks Against| META
+    ITERATE -->|Updates| WORK_MEM
+    
+    %% Memory Management
+    WORK_MEM -->|Trigger| COMPACT
+    COMPACT -->|Summarize to| LONG_MEM
+    CONTEXT -->|Manages| WORK_MEM
+    
+    %% Tool Execution Flow
+    TOOL_EXEC -->|Calls| MCP_CLIENT
+    MCP_CLIENT -->|Protocol| MCP_SERVERS
+    MCP_SERVERS -->|Connect to| EXT_SYS
+    TOOL_DISC -->|Reads| TOOL_REG
+    TOOL_EXEC -->|Post-Check| TOOL_VER
+    
+    %% Perceptions
+    EXT_SYS -->|Events| PUSH
+    PULL -->|Queries| MCP_CLIENT
+    PUSH -->|Alerts| GATHER
+    PULL -->|Data| GATHER
+    
+    %% Interactions
+    CONV -->|Initiates| LOOP
+    PROACT -->|From| LOOP
+    EXPLAIN -->|Traces| AUDIT
+    
+    %% HITL Flow
+    TIER1 -->|Execute| ACT
+    TIER2 -->|Execute + Log| ACT
+    TIER3 -->|Wait for Approval| USER
+    TIER4 -->|Escalate to| USER
+    USER -->|Approval| ACT
+    
+    %% Safety Layer
+    CONV -->|Validate| SAFETY_INPUT
+    SAFETY_INPUT -->|Clean Input| LOOP
+    ACT -->|Monitor| SAFETY_EXEC
+    VERIFY -->|Final Check| SAFETY_OUTPUT
+    Layer3 -->|Defend| PROMPT_DEF
+    LOOP -.->|Log All| AUDIT
+    
+    %% Evaluation
+    LOOP -.->|Measure| METRICS
+    Layer3 -.->|Test| GOLDEN
+    SAFETY_INPUT -.->|Test| SAFETY_TEST
+    LOOP -.->|Test| REGRESSION
+    ACT -.->|Benchmark| PERF
+    LOOP -.->|Attack| REDTEAM
+    LOOP -.->|Mirror| SHADOW
+    
+    %% Cross-Cutting
+    RBAC -.->|Control| Layer3
+    CONSENT -.->|Authorize| ACT
+    ENCRYPTION -.->|Protect| WORK_MEM
+    ENCRYPTION -.->|Protect| MCP_CLIENT
+    VERSION -.->|Track| Layer7
+
+    classDef metaStyle fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
+    classDef coreStyle fill:#4dabf7,stroke:#1971c2,stroke-width:2px,color:#fff
+    classDef memStyle fill:#51cf66,stroke:#2f9e44,stroke-width:2px,color:#fff
+    classDef toolStyle fill:#ffd43b,stroke:#f59f00,stroke-width:2px,color:#000
+    classDef perceptionStyle fill:#ff8787,stroke:#fa5252,stroke-width:2px,color:#fff
+    classDef knowledgeStyle fill:#b197fc,stroke:#7950f2,stroke-width:2px,color:#fff
+    classDef hitlStyle fill:#ffa94d,stroke:#fd7e14,stroke-width:2px,color:#000
+    classDef safetyStyle fill:#e599f7,stroke:#ae3ec9,stroke-width:2px,color:#fff
+    classDef evalStyle fill:#74c0fc,stroke:#1c7ed6,stroke-width:2px,color:#fff
+    
+    class META metaStyle
+    class LOOP,GATHER,PLAN,ACT,VERIFY,ITERATE coreStyle
+    class WORK_MEM,LONG_MEM,CONTEXT,COMPACT memStyle
+    class TOOL_REG,TOOL_DISC,TOOL_EXEC,TOOL_VER toolStyle
+    class PUSH,PULL perceptionStyle
+    class BP_CLINICAL,BP_LEGAL,BP_PRODUCT,BP_CUSTOM,POLICIES,GUIDELINES,PROCEDURES,EXAMPLES knowledgeStyle
+    class HITL,TIER1,TIER2,TIER3,TIER4 hitlStyle
+    class SAFETY_INPUT,SAFETY_EXEC,SAFETY_OUTPUT,PROMPT_DEF,AUDIT safetyStyle
+    class GOLDEN,SAFETY_TEST,REGRESSION,PERF,REDTEAM,SHADOW,METRICS evalStyle

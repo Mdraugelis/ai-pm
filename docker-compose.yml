@@ -1,0 +1,110 @@
+# Docker Compose for AI Product Manager Agent
+# Local Development Environment
+# Version: 1.0
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ai-pm-postgres
+    environment:
+      POSTGRES_DB: ai_pm_agent_dev
+      POSTGRES_USER: ai_pm_user
+      POSTGRES_PASSWORD: dev_password_change_in_prod
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_pm_user -d ai_pm_agent_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ai-pm-network
+
+  # Redis (for caching tool results and working memory)
+  redis:
+    image: redis:7-alpine
+    container_name: ai-pm-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ai-pm-network
+
+  # Agent Application (when containerized)
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-pm-agent
+    environment:
+      - ENVIRONMENT=development
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=ai_pm_agent_dev
+      - DB_USER=ai_pm_user
+      - DB_PASSWORD=dev_password_change_in_prod
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./docs:/app/docs
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"  # If running API
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ai-pm-network
+    command: python src/main.py
+    restart: unless-stopped
+    profiles:
+      - full  # Only start with --profile full
+
+  # pgAdmin (Optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ai-pm-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@geisinger.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - ai-pm-network
+    profiles:
+      - tools  # Only start with --profile tools
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  ai-pm-network:
+    driver: bridge

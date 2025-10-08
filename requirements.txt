@@ -1,0 +1,32 @@
+# Anthropic SDK
+claude-agent-sdk>=0.1.0
+anthropic>=0.18.0
+
+# Database
+psycopg2-binary>=2.9.0
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+
+# Configuration & Validation
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+pyyaml>=6.0
+
+# Web Framework (for potential API)
+fastapi>=0.104.0
+uvicorn>=0.24.0
+
+# HTTP Clients
+httpx>=0.25.0
+aiohttp>=3.9.0
+
+# Utilities
+python-dotenv>=1.0.0
+click>=8.1.0
+rich>=13.0.0  # Beautiful CLI output
+
+# Logging & Monitoring
+structlog>=23.1.0
+
+# Date/Time
+python-dateutil>=2.8.0

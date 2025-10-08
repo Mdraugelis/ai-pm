@@ -1,0 +1,179 @@
+# Development Configuration
+# AI Product Manager Agent
+# Version: 1.0
+
+environment: development
+
+# Agent Configuration
+agent:
+  model: "claude-sonnet-4-5-20250929"
+  max_iterations: 10
+  confidence_threshold: 0.7
+
+  context_budget:
+    total_tokens: 200000
+    meta_blueprint: 2000
+    working_memory: 50000
+    tool_results: 30000
+    blueprints: 20000
+    reasoning: 40000
+    output: 10000
+    safety: 8000
+    dynamic: 40000
+
+  compaction:
+    enabled: true
+    trigger_at_percent: 80  # Trigger at 160K tokens
+    target_compression_ratio: 10
+    preserve_always:
+      - task_goals
+      - critical_decisions
+      - action_items
+      - safety_data
+      - user_instructions
+
+  self_verification:
+    enabled: true
+    checks:
+      - policy_compliance
+      - completeness
+      - consistency
+      - quality
+      - confidence
+      - safety
+    min_confidence: 0.70
+
+# HITL Configuration
+hitl:
+  enabled: true
+
+  tier_mapping:
+    document_draft: tier_2
+    document_submit: tier_3
+    risk_determination: tier_4
+    vendor_recommendation: tier_3
+    timeline_proposal: tier_2
+
+  approval_timeout_seconds:
+    tier_1: 0  # No approval needed
+    tier_2: 0  # Passive review
+    tier_3: 300  # 5 minutes
+    tier_4: 600  # 10 minutes
+
+  escalation:
+    max_iteration_threshold: 10
+    low_confidence_threshold: 0.70
+
+# Tool Configuration
+tools:
+  servicenow:
+    enabled: true
+    timeout_seconds: 30
+    retry_attempts: 3
+    retry_delay_seconds: 2
+
+  document_generator:
+    output_format: markdown
+    citation_required: true
+    template_directory: "docs/templates"
+
+  risk_assessor:
+    questions_count: 5
+    significant_risk_threshold: "Q1=yes AND Q2=yes"
+
+  vendor_scanner:
+    enabled: true
+    timeout_seconds: 15
+    cache_ttl_seconds: 3600
+
+# Database Configuration
+database:
+  host: localhost
+  port: 5432
+  name: ai_pm_agent_dev
+  user: ai_pm_user
+  password: ${DB_PASSWORD}  # From environment
+  pool_size: 5
+  max_overflow: 10
+  echo_sql: true  # Log all SQL in dev
+
+# Blueprint Configuration
+blueprints:
+  directory: "docs/blueprints"
+  meta_blueprint: "meta-blueprint.yaml"
+  domain_blueprints:
+    product_management: "product-mgmt-blueprint.yaml"
+  reload_on_change: true  # Auto-reload in dev
+
+# Logging Configuration
+logging:
+  level: DEBUG
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+  handlers:
+    console:
+      enabled: true
+      level: DEBUG
+
+    file:
+      enabled: true
+      level: INFO
+      path: "logs/agent.log"
+      rotation: "1 day"
+      retention: "7 days"
+
+    audit:
+      enabled: true
+      level: INFO
+      path: "logs/audit.log"
+      rotation: "1 day"
+      retention: "90 days"
+
+# Metrics & Monitoring
+monitoring:
+  enabled: true
+
+  metrics:
+    collection_interval_seconds: 60
+
+    track:
+      - agent_loop_latency
+      - tool_execution_time
+      - token_usage
+      - verification_results
+      - hitl_interactions
+
+  alerts:
+    enabled: false  # Disabled in dev
+
+# Security Configuration
+security:
+  rbac:
+    enabled: true
+    default_role: "developer"
+
+  encryption:
+    enabled: false  # Disabled in dev for easier debugging
+
+  input_validation:
+    enabled: true
+    max_input_length: 10000
+
+  output_validation:
+    enabled: true
+    phi_scanner: true
+
+# Feature Flags
+features:
+  multi_agent: false  # Not in Phase 1
+  mcp_integration: false  # Not in Phase 1
+  vector_db: false  # Not in Phase 1
+  advanced_perceptions: false  # Not in Phase 1
+
+# Development-Specific Settings
+dev:
+  auto_reload: true
+  debug_mode: true
+  use_mock_tools: false  # Set to true to use mock tools
+  skip_hitl_approval: false  # Set to true to auto-approve all HITL
+  verbose_logging: true

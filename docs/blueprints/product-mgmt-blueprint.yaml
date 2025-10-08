@@ -1,0 +1,317 @@
+# Product Management AI Governance Blueprint
+# Domain-specific policies for Product Management agent
+# Version: 1.0
+# Last Updated: January 2025
+
+name: "Product Management AI Governance"
+domain: "product_management"
+type: "domain_blueprint"
+priority: "high"
+version: "1.0"
+
+# Domain-Specific Policies (MUST follow)
+policies:
+  - id: "PM-POL-001"
+    rule: "All Significant Risk AI programs require equity audit"
+    enforcement: "MUST"
+    trigger: "risk_level == 'significant'"
+    action: "Flag equity audit requirement in discovery form"
+
+  - id: "PM-POL-002"
+    rule: "Discovery forms must include workflow integration diagram"
+    enforcement: "MUST"
+    verification: "Check for workflow diagram in generated form"
+
+  - id: "PM-POL-003"
+    rule: "All intake briefs must include vendor information if applicable"
+    enforcement: "MUST"
+    action: "Run vendor scanner if vendor mentioned in SNOW ticket"
+
+  - id: "PM-POL-004"
+    rule: "Risk screening (5 questions) must be completed for all initiatives"
+    enforcement: "MUST"
+    verification: "All 5 risk questions answered"
+
+  - id: "PM-POL-005"
+    rule: "Significant Risk AI requires enhanced documentation"
+    enforcement: "MUST"
+    required_docs:
+      - "Transparency Package"
+      - "HITL Plan"
+      - "Monitoring Plan"
+      - "Equity KPI Framework"
+
+# Guidelines (SHOULD follow)
+guidelines:
+  - id: "PM-GUIDE-001"
+    recommendation: "Prefer evidence-based metrics over proxy metrics"
+    enforcement: "SHOULD"
+    rationale: "Proxy metrics can lead to unintended consequences"
+
+  - id: "PM-GUIDE-002"
+    recommendation: "Include stakeholder impact analysis in all briefs"
+    enforcement: "SHOULD"
+    sections: ["clinical_staff", "patients", "administrative"]
+
+  - id: "PM-GUIDE-003"
+    recommendation: "Flag potential equity concerns proactively"
+    enforcement: "SHOULD"
+    triggers:
+      - "Patient-facing AI"
+      - "Affects protected characteristics"
+      - "Historical bias in domain"
+
+  - id: "PM-GUIDE-004"
+    recommendation: "Suggest pilot design with clear success criteria"
+    enforcement: "SHOULD"
+    components: ["sample_size", "duration", "metrics", "stop_criteria"]
+
+# Procedures (HOW to do tasks)
+procedures:
+  - id: "PM-PROC-001"
+    name: "Intake Brief Generation"
+    description: "Process SNOW ticket into structured intake brief"
+    steps:
+      - step: 1
+        action: "Extract SNOW ticket fields (requestor, department, description)"
+        tools: ["servicenow_client"]
+
+      - step: 2
+        action: "Research vendor information if mentioned"
+        tools: ["vendor_scanner"]
+        condition: "vendor mentioned in ticket"
+
+      - step: 3
+        action: "Run 5-question risk screener"
+        tools: ["risk_assessor"]
+
+      - step: 4
+        action: "Populate intake brief template"
+        tools: ["document_generator"]
+        template: "intake-brief.md"
+
+      - step: 5
+        action: "Self-verify completeness"
+        checks:
+          - "All required fields populated"
+          - "Risk assessment complete"
+          - "Evidence sources cited"
+
+      - step: 6
+        action: "Request Tier 3 approval"
+        reason: "Document submission is high-impact"
+
+  - id: "PM-PROC-002"
+    name: "AI Discovery Form Drafting"
+    description: "Generate comprehensive AI discovery form"
+    steps:
+      - step: 1
+        action: "Load approved intake brief"
+        source: "database"
+
+      - step: 2
+        action: "Identify auto-fillable sections"
+        sections: ["program_info", "requestor_info", "risk_level"]
+
+      - step: 3
+        action: "Draft workflow integration section"
+        tools: ["workflow_analyzer"]
+
+      - step: 4
+        action: "Propose success metrics"
+        tools: ["metric_designer"]
+        guideline: "PM-GUIDE-001"
+
+      - step: 5
+        action: "Flag sections needing SME input"
+        mark_as: "NEEDS_REVIEW"
+
+      - step: 6
+        action: "Self-verify against policy PM-POL-002"
+        check: "Workflow diagram present"
+
+      - step: 7
+        action: "Request Tier 3 approval before sending"
+
+  - id: "PM-PROC-003"
+    name: "Risk Determination & Guardrails"
+    description: "Classify risk and generate required artifacts"
+    steps:
+      - step: 1
+        action: "Load risk screener results"
+
+      - step: 2
+        action: "Classify as Significant Risk AI"
+        criteria:
+          - "Q1: Affects patient care = Yes"
+          - "Q2: Autonomous decisions = Yes"
+          - "Q4: Limited reversibility"
+          - "Q5: Protected characteristics = Yes"
+
+      - step: 3
+        action: "Generate enhanced documentation if Significant Risk"
+        condition: "classification == 'significant'"
+        artifacts:
+          - "transparency_package_template"
+          - "hitl_plan_template"
+          - "monitoring_plan_template"
+          - "equity_kpi_framework"
+
+      - step: 4
+        action: "Request Tier 4 approval for risk classification"
+        reason: "Critical decision requiring AVP approval"
+
+# Risk Screener (5 Questions)
+risk_screener:
+  questions:
+    - id: "Q1"
+      question: "Does this AI affect patient care decisions?"
+      weight: "high"
+      significant_if: "yes"
+
+    - id: "Q2"
+      question: "Does this AI operate autonomously without human oversight?"
+      weight: "high"
+      significant_if: "yes"
+
+    - id: "Q3"
+      question: "Are the stakes high if the AI makes an error?"
+      weight: "medium"
+      significant_if: "yes"
+
+    - id: "Q4"
+      question: "Is the AI's impact reversible?"
+      weight: "medium"
+      significant_if: "no"
+
+    - id: "Q5"
+      question: "Does this AI involve protected characteristics?"
+      weight: "high"
+      significant_if: "yes"
+
+  classification_logic:
+    significant:
+      condition: "(Q1=yes AND Q2=yes) OR (Q1=yes AND Q4=no AND Q5=yes)"
+
+    high:
+      condition: "(Q1=yes OR Q3=yes) AND not significant"
+
+    medium:
+      condition: "(Q2=yes OR Q5=yes) AND not (significant OR high)"
+
+    low:
+      condition: "All other cases"
+
+# Required Document Templates
+templates:
+  - name: "intake-brief.md"
+    sections:
+      - "Program Title"
+      - "Requestor Information"
+      - "Problem Statement"
+      - "Proposed Solution"
+      - "Workflow Integration Guess"
+      - "Success Metric Proposal"
+      - "Risk Level (from screener)"
+      - "Vendor Information (if applicable)"
+      - "Next Steps"
+
+  - name: "discovery-form.md"
+    sections:
+      - "Program Overview"
+      - "Technical Details"
+      - "Workflow Integration"
+      - "Success Metrics"
+      - "Risk Assessment"
+      - "Equity Considerations"
+      - "Monitoring Plan"
+      - "HITL Checkpoints"
+      - "Vendor Details"
+      - "Timeline & Milestones"
+
+# Knowledge References
+knowledge:
+  key_facts:
+    - "Significant Risk AI definition (5-question screener)"
+    - "Required AI Subcommittee approvals"
+    - "Equity audit requirements"
+    - "HITL checkpoint standards"
+
+  references:
+    - source: "Geisinger AI Governance Policy v2.1"
+      url: "internal://policies/ai-governance"
+
+    - source: "Product Management Intake Process"
+      url: "internal://confluence/pm-intake"
+
+    - source: "Vendor Evaluation Criteria"
+      url: "internal://policies/vendor-eval"
+
+  examples:
+    - title: "Epic AI Inbox Prioritization"
+      risk_level: "medium"
+      outcome: "Approved with monitoring"
+      lessons:
+        - "Clear success metrics critical"
+        - "Pilot design with stop criteria"
+        - "Weekly check-ins with clinical staff"
+
+# HITL Tier Mapping for Product Management
+hitl_tier_mapping:
+  - action_type: "document_draft"
+    tier: "TIER_2"
+    rationale: "Passive review sufficient, reversible"
+
+  - action_type: "document_submit"
+    tier: "TIER_3"
+    rationale: "High impact, requires active approval"
+
+  - action_type: "risk_determination"
+    tier: "TIER_4"
+    rationale: "Critical decision, AVP approval required"
+
+  - action_type: "vendor_recommendation"
+    tier: "TIER_3"
+    rationale: "Financial and contractual implications"
+
+  - action_type: "timeline_proposal"
+    tier: "TIER_2"
+    rationale: "Medium impact, can be adjusted"
+
+# Success Metrics
+success_criteria:
+  intake_brief_generation:
+    - metric: "Time to draft"
+      target: "< 2 hours"
+      measurement: "From ticket assignment to draft ready"
+
+    - metric: "Completeness"
+      target: "> 90%"
+      measurement: "Percentage of required fields populated"
+
+    - metric: "Accuracy"
+      target: "> 85%"
+      measurement: "Matches human review assessment"
+
+  discovery_form_generation:
+    - metric: "Time to draft"
+      target: "< 24 hours"
+      measurement: "From intake approval to form draft"
+
+    - metric: "Sections complete"
+      target: "> 80%"
+      measurement: "Percentage not requiring SME input"
+
+    - metric: "Revision count"
+      target: "< 2 revisions"
+      measurement: "Before final approval"
+
+# Metadata
+metadata:
+  version: "1.0"
+  effective_date: "2025-01-15"
+  domain: "product_management"
+  owner: "Product Management Team"
+  technical_contact: "ai-pm-agent@geisinger.org"
+  review_cycle: "monthly"
+  last_review: "2025-01-15"
