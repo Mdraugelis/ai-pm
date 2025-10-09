@@ -86,6 +86,23 @@ tools:
     timeout_seconds: 15
     cache_ttl_seconds: 3600
 
+  azure_devops:
+    enabled: true
+    timeout_seconds: 30
+    retry_attempts: 3
+    retry_delay_seconds: 2
+    # Organization URL and PAT come from environment variables
+    # AZURE_DEVOPS_ORG_URL and AZURE_DEVOPS_PAT
+    default_project: ${AZURE_DEVOPS_PROJECT}  # From environment
+    operations:
+      - list_projects
+      - get_project
+      - list_work_items
+      - get_work_item
+      - update_work_item
+      - query_work_items
+      - list_boards
+
 # Database Configuration
 database:
   host: localhost

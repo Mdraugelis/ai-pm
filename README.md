@@ -95,6 +95,7 @@ This project implements the **Geisinger Agentic Architecture v1.0** with simplif
 
 ┌─────────────────────────────────────────────────────────┐
 │  LAYER 3: Tool Framework                                 │
+│  ✓ Azure DevOps Client (Work Items, Boards, Projects)   │
 │  ✓ ServiceNow Ticket Retrieval                          │
 │  ✓ Document Generation (Brief, Discovery Form)           │
 │  ✓ Risk Assessment Calculator                            │
@@ -196,7 +197,9 @@ ai-pm/
 │   │   └── context_manager.py         # Context budget
 │   ├── tools/
 │   │   ├── __init__.py
+│   │   ├── base.py                    # Tool base classes
 │   │   ├── tool_registry.py           # Tool catalog
+│   │   ├── azure_devops_client.py     # Azure DevOps integration
 │   │   ├── servicenow_client.py       # SNOW integration
 │   │   ├── document_generator.py      # Template population
 │   │   ├── risk_assessor.py           # Risk screening
@@ -553,8 +556,14 @@ CREATE TABLE documents (
 # .env file
 ANTHROPIC_API_KEY=sk-ant-...
 DATABASE_URL=postgresql://user:pass@localhost:5432/ai_pm_agent
-SERVICENOW_API_URL=https://geisinger.service-now.com/api/now
+SERVICENOW_API_URL=https://your-instance.service-now.com/api/now
 SERVICENOW_API_KEY=...
+
+# Azure DevOps Integration
+AZURE_DEVOPS_ORG_URL=https://dev.azure.com/your-organization
+AZURE_DEVOPS_PAT=your-personal-access-token
+AZURE_DEVOPS_PROJECT=your-default-project
+
 LOG_LEVEL=INFO
 ENVIRONMENT=development
 ```
@@ -589,14 +598,163 @@ hitl:
     risk_determination: tier_4
     
 tools:
+  azure_devops:
+    timeout: 30
+    retry_attempts: 3
+
   servicenow:
     timeout: 30
     retry_attempts: 3
-  
+
   document_generator:
     output_format: markdown
     citation_required: true
 ```
+
+---
+
+## 🔗 Azure DevOps Integration
+
+The AI Product Manager Agent integrates with Azure DevOps to manage work items, boards, and projects. This enables the agent to track AI initiatives in your existing Azure DevOps workflow.
+
+### Setup
+
+1. **Install Azure DevOps CLI**:
+```bash
+# Install Azure CLI (if not already installed)
+brew install azure-cli
+
+# Add Azure DevOps extension
+az extension add --name azure-devops
+```
+
+2. **Generate Personal Access Token (PAT)**:
+   - Go to: `https://dev.azure.com/your-organization/_usersSettings/tokens`
+   - Click "New Token"
+   - Select scopes: `Work Items (Read, Write)`, `Project and Team (Read)`
+   - Copy the generated token
+
+3. **Configure Environment**:
+```bash
+# Add to .env file
+AZURE_DEVOPS_ORG_URL=https://dev.azure.com/your-organization
+AZURE_DEVOPS_PAT=your-personal-access-token-here
+AZURE_DEVOPS_PROJECT=your-default-project  # Optional
+```
+
+### Supported Operations
+
+- **`list_projects`**: List all projects in your organization
+- **`get_project`**: Get details of a specific project
+- **`list_work_items`**: List work items with optional filters
+- **`get_work_item`**: Get detailed information about a work item
+- **`update_work_item`**: Update work item fields (title, state, assignee, etc.)
+- **`query_work_items`**: Execute custom WIQL queries
+- **`list_boards`**: List boards and iterations in a project
+
+### Usage Examples
+
+#### List All Projects
+```python
+from src.tools.azure_devops_client import AzureDevOpsTool
+from src.tools.base import ExecutionContext
+
+tool = AzureDevOpsTool()
+context = ExecutionContext(session_id="session-123")
+
+result = await tool.execute(
+    {"operation": "list_projects"},
+    context
+)
+print(result.data)
+# Output: {"value": [...], "count": 5}
+```
+
+#### Get Work Item Details
+```python
+result = await tool.execute(
+    {
+        "operation": "get_work_item",
+        "work_item_id": "12345"
+    },
+    context
+)
+print(result.data["fields"]["System.Title"])
+```
+
+#### List Active Work Items
+```python
+result = await tool.execute(
+    {
+        "operation": "list_work_items",
+        "project": "AI-Initiatives",
+        "state": "Active",
+        "top": 10
+    },
+    context
+)
+```
+
+#### Update Work Item Status
+```python
+result = await tool.execute(
+    {
+        "operation": "update_work_item",
+        "work_item_id": "12345",
+        "fields": {
+            "System.State": "Completed",
+            "System.AssignedTo": "user@example.com"
+        }
+    },
+    context
+)
+```
+
+#### Custom WIQL Query
+```python
+query = """
+    SELECT [System.Id], [System.Title], [System.State]
+    FROM WorkItems
+    WHERE [System.WorkItemType] = 'User Story'
+    AND [System.Tags] CONTAINS 'AI'
+    ORDER BY [System.ChangedDate] DESC
+"""
+
+result = await tool.execute(
+    {
+        "operation": "query_work_items",
+        "query": query,
+        "project": "AI-Initiatives"
+    },
+    context
+)
+```
+
+### Testing
+
+Run the Azure DevOps tool tests:
+```bash
+# Run all Azure DevOps tests
+pytest tests/unit/test_tools/test_azure_devops_client.py -v
+
+# Run specific test
+pytest tests/unit/test_tools/test_azure_devops_client.py::TestListProjects -v
+```
+
+### Troubleshooting
+
+**Authentication Error:**
+- Verify PAT token is valid and hasn't expired
+- Check PAT has correct scopes (Work Items: Read/Write, Project: Read)
+- Ensure `AZURE_DEVOPS_ORG_URL` matches your organization
+
+**Command Timeout:**
+- Increase timeout in config: `tools.azure_devops.timeout_seconds`
+- Check network connectivity to Azure DevOps
+
+**Permission Denied:**
+- Verify you have access to the project
+- Check PAT token permissions
 
 ---
 
