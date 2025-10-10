@@ -548,6 +548,108 @@ CREATE TABLE documents (
 
 ---
 
+## 📋 AI Discovery Form
+
+The **AI Discovery Form** is a foundational design document used by Geisinger stakeholders to assess proposed AI programs. The agent assists Program Owners in creating comprehensive, high-quality discovery forms that meet governance requirements.
+
+### Purpose
+
+The AI Discovery Form serves as:
+- **Comprehensive program documentation** - Captures all essential information about the proposed AI initiative
+- **Decision-making tool** - Enables clinical, technical, governance, and executive stakeholders to make informed decisions
+- **Governance checkpoint** - Ensures compliance with Geisinger's AI Governance Policy
+- **Planning foundation** - Provides the detail necessary for implementation planning
+
+### Form Structure
+
+The AI Discovery Form includes **7 major sections**:
+
+#### 1. Basic Information
+- **Title**: Clear, descriptive program title
+- **Program Owner**: Individual/team responsible for oversight
+- **Executive Champion**: Highest-level advocate and sponsor
+- **Department(s)**: Operational ownership
+- **AI Vendor or Internal Solution**: Solution source and vendor details
+
+#### 2. Problem Definition
+- **Background**: Detailed problem description with current workflow, scope data, and root cause
+- **Goal**: Specific objectives including primary outcome, target metrics, timeline, population, and workflow impact
+- **AI vs. Alternatives**: Justification for AI over simpler solutions (process improvement, RPA, etc.)
+
+#### 3. Approach
+- **Workflow Integration**: Detailed description for each user role:
+  - Where/when they interact with AI
+  - Inputs they provide
+  - Outputs AI provides
+  - Actions they may take in response
+- **Technical Integration**: System connections, data flow diagram, Epic/EHR build requirements
+- **AI Solution Components**:
+  - Data sources (specific elements, frequency, format)
+  - AI system details (type, prediction, training approach)
+  - System outputs (format, visibility, storage)
+
+#### 4. Success Metrics
+- **Primary Goal**: Single most important success metric
+- **Secondary Metrics**: Clinical outcomes, operational outcomes, process measures
+- **Anticipated Benefits**: Expected changes to clinical practice, patient outcomes, and organizational performance
+
+#### 5. Equity Considerations
+- **Known Disparities**: Literature review of disparities in clinical area and similar AI solutions
+- **Access Barriers**: Groups that might face barriers (language, literacy, digital access, geographic, socioeconomic)
+- **Benefit Disparities**: Analysis of differential impact across populations
+- **Status Quo Comparison**: Equity implications of current process vs. AI solution
+- **Mitigation Plans**: Specific actions to address identified concerns
+
+#### 6. Risk Assessment
+For each identified risk:
+- Risk description and scenario
+- Impact assessment (patient care, legal, financial, operational)
+- Likelihood and severity ratings
+- Comparison to current process
+- Mitigation strategies (prevention, detection, response)
+
+#### 7. Potential Benefits
+- **Patient Care Benefits**: Volume impact, specific care improvements (quantified)
+- **Operational Benefits**: Efficiency gains, workflow improvements, capacity impact
+- **Financial Benefits**: Cost reductions, revenue impact (with calculations)
+- **Assumptions**: All assumptions underlying benefit calculations
+
+### Quality Standards
+
+The agent ensures discovery forms meet these criteria:
+
+✅ **Completeness**: All required fields populated with sufficient detail
+✅ **Clarity**: Plain language understandable by non-technical stakeholders
+✅ **Evidence-Based**: Claims supported by data, calculations shown
+✅ **Actionable**: Sufficient detail for stakeholder decision-making
+
+### Agent Assistance
+
+The agent helps create high-quality discovery forms by:
+
+1. **Gathering Information**: Interviewing the user about the AI program, asking clarifying questions
+2. **Drafting Content**: Using templates and examples to populate each section
+3. **Ensuring Quality**: Verifying completeness, checking calculations, confirming plain language
+4. **Iterating**: Reviewing with user, identifying gaps, refining until standards are met
+
+### Review Process
+
+Discovery Forms are reviewed by:
+- **Clinical Lead**: Workflow integration, patient safety, clinical benefits
+- **IT/Technical Lead**: Technical feasibility, system integration, data requirements
+- **Compliance/Legal**: Regulatory compliance, risk assessment, legal implications
+- **Equity and Inclusion**: Equity analysis, disparity assessment, access considerations
+- **Finance**: Cost-benefit analysis, financial projections, ROI
+- **Executive Sponsor**: Strategic alignment, resource allocation, final approval
+
+### Related Documents
+
+- **Blueprint**: `docs/blueprints/ai-discovery-form.yaml` - Complete form specification
+- **Template**: Used by document generator tool
+- **Examples**: Sample completed forms in `docs/templates/`
+
+---
+
 ## 🔧 Configuration
 
 ### Environment Variables

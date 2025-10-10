@@ -1,0 +1,913 @@
+# AI Discovery Form Blueprint
+# Geisinger AI Product Manager Agent - Domain Knowledge
+# Version: 1.0
+
+name: "AI Discovery Form"
+type: "document_template"
+domain: "product_management"
+version: "1.0"
+criticality: "foundational"
+
+description: |
+  The AI Discovery Form is a foundational design document used by Geisinger
+  stakeholders to assess AI programs. This form captures comprehensive information
+  about proposed AI initiatives including problem definition, technical approach,
+  workflow integration, risks, benefits, and equity considerations.
+
+  This document will be reviewed by clinical, technical, governance, and executive
+  stakeholders to make informed decisions about AI program approval and prioritization.
+
+purpose:
+  - Provide comprehensive overview of proposed AI program
+  - Enable stakeholder assessment and decision-making
+  - Document workflow integration and technical requirements
+  - Identify risks, benefits, and equity considerations
+  - Establish success metrics and accountability
+
+# ============================================================================
+# Form Structure and Required Fields
+# ============================================================================
+
+sections:
+  # --------------------------------------------------------------------------
+  # Section 1: Basic Information
+  # --------------------------------------------------------------------------
+  - id: "basic_information"
+    name: "Basic Information"
+    order: 1
+    description: "Core program identification and ownership"
+
+    fields:
+      - id: "title"
+        name: "Title"
+        type: "text"
+        required: true
+        description: "Clear, descriptive title of the AI program"
+        guidance: |
+          Use a concise title that clearly describes the AI program's purpose.
+          Format: "[AI Function] for [Clinical/Operational Area]"
+          Example: "Predictive Model for Early Sepsis Detection"
+
+      - id: "program_owner"
+        name: "Program Owner"
+        type: "contact"
+        required: true
+        description: "Individual or team responsible for program oversight"
+        guidance: |
+          The Program Owner is responsible for:
+          - Overseeing development, implementation, and ongoing management
+          - Ensuring alignment with organizational strategic goals
+          - Ensuring compliance with Geisinger Policies
+          - Managing integration into existing workflows
+
+          Format: Full name and email address
+
+      - id: "executive_champion"
+        name: "Executive Champion"
+        type: "contact"
+        required: true
+        description: "Executive Sponsor acting as highest-level advocate"
+        guidance: |
+          The Executive Champion/Sponsor:
+          - Acts as the project's highest-level advocate
+          - Creates organizational conditions for successful implementation
+          - Ensures proper governance structures are in place
+          - Allocates appropriate resources
+          - Makes critical decisions about scope and risk tolerance
+          - Understands benefits and limitations of the AI solution
+          - Advocates for proper clinical and operational validation
+          - Maintains focus on patient safety and healthcare quality
+
+          Format: Full name and email address
+
+      - id: "departments"
+        name: "Department(s)"
+        type: "multi_select"
+        required: true
+        description: "Geisinger Department(s) that will own the program in operations"
+        guidance: |
+          Select all departments that will have operational ownership.
+          This determines accountability and resource allocation.
+
+      - id: "solution_type"
+        name: "AI Vendor or Internal Solution"
+        type: "select"
+        required: true
+        options:
+          - "Vendor Solution"
+          - "Internal Development"
+          - "Hybrid (Vendor + Internal)"
+        description: "Whether solution is vendor-provided, internally developed, or hybrid"
+
+      - id: "vendors"
+        name: "Vendor(s)"
+        type: "text"
+        required_if: "solution_type == 'Vendor Solution' OR solution_type == 'Hybrid'"
+        description: "Name of vendor(s) if applicable"
+        guidance: "List all vendors involved in the AI solution"
+
+  # --------------------------------------------------------------------------
+  # Section 2: Problem Definition
+  # --------------------------------------------------------------------------
+  - id: "problem_definition"
+    name: "Problem Definition"
+    order: 2
+    description: "Clear articulation of the problem being solved"
+
+    fields:
+      - id: "background"
+        name: "Background on the problem to be solved"
+        type: "long_text"
+        required: true
+        description: "Detailed description of the specific problem"
+        guidance: |
+          Provide a comprehensive description including:
+
+          1. Current Workflow:
+             - How are decisions made today?
+             - Who is involved in the process?
+             - What are the current pain points?
+
+          2. Problem Scope (provide data where possible):
+             - Number of patients affected
+             - Current performance metrics
+             - Frequency of occurrence
+             - Geographic or departmental scope
+
+          3. Root Cause:
+             - What is causing this problem?
+             - Why haven't existing solutions resolved it?
+             - What barriers exist to improvement?
+
+          Example:
+          "Currently, sepsis identification relies on manual review of vital signs
+          by nursing staff every 4 hours. This affects approximately 15,000
+          patients annually across our acute care facilities. Our current sepsis
+          mortality rate is 18% (vs. national benchmark of 15%), with average
+          time-to-treatment of 3.2 hours. Root cause analysis indicates that
+          early warning signs are often subtle and occur between manual checks."
+        validation:
+          - Must include current workflow description
+          - Should include quantitative data on scope
+          - Must explain root cause
+
+      - id: "goal"
+        name: "Goal"
+        type: "long_text"
+        required: true
+        description: "Specific, measurable objectives for the AI program"
+        guidance: |
+          Define clear objectives including:
+
+          1. Primary Outcome:
+             - What is the main thing you want to improve?
+             - Be specific and measurable
+
+          2. Target Improvement Metrics:
+             - Quantify expected improvement where possible
+             - Include baseline and target values
+
+          3. Timeline:
+             - When do you expect to achieve results?
+             - Include milestones
+
+          4. Target Population:
+             - How many patients/users affected?
+             - What are the characteristics?
+
+          5. Expected Impact:
+             - Changes to workflows
+             - Staffing implications
+             - System changes
+
+          Example:
+          "Primary outcome: Reduce sepsis mortality from 18% to 15% within 18 months.
+          Target metrics: (1) Reduce time-to-treatment from 3.2 to 2.0 hours,
+          (2) Increase early detection rate from 65% to 85%.
+          Target population: 15,000 at-risk patients annually across 8 acute care facilities.
+          Expected impact: Nursing staff will receive automated alerts, reducing manual
+          screening burden by 50% while improving detection accuracy."
+        validation:
+          - Must include primary outcome
+          - Must include at least one quantified target metric
+          - Must specify target population
+          - Must describe timeline
+
+      - id: "ai_vs_alternatives"
+        name: "AI versus other solutions"
+        type: "long_text"
+        required: true
+        description: "Justification for AI approach over alternatives"
+        guidance: |
+          Address the following:
+
+          1. Alternatives Tried or Considered:
+             - Process improvement initiatives
+             - Legacy system optimization
+             - RPA (Robotic Process Automation)
+             - Rule-based decision support
+             - Additional staffing
+             - What were the results or limitations?
+
+          2. Why AI is More Effective:
+             - What capabilities does AI provide that alternatives don't?
+             - What complexity requires AI vs. simpler solutions?
+             - What patterns or insights can only AI detect?
+
+          3. Organizational Alignment:
+             - How does this align with strategic priorities?
+             - What organizational needs does this address?
+
+          Example:
+          "We previously implemented: (1) Sepsis order set in Epic (20% adoption),
+          (2) Nursing education program (modest improvement in detection),
+          (3) Manual screening protocol (labor-intensive, inconsistent).
+
+          AI is more effective because: (1) Can analyze continuous multivariate
+          data patterns that humans cannot track simultaneously, (2) Provides
+          consistent 24/7 monitoring without fatigue, (3) Can identify subtle
+          early warning signs before they meet traditional criteria.
+
+          Aligns with organizational priority to reduce preventable mortality
+          and improve early intervention for high-risk conditions."
+        validation:
+          - Must describe alternatives considered
+          - Must explain why AI is superior to simpler solutions
+          - Must demonstrate organizational alignment
+
+  # --------------------------------------------------------------------------
+  # Section 3: Approach
+  # --------------------------------------------------------------------------
+  - id: "approach"
+    name: "Approach"
+    order: 3
+    description: "Detailed workflow and technical integration"
+
+    fields:
+      - id: "workflow_integration"
+        name: "Workflow Integration"
+        type: "long_text"
+        required: true
+        description: "Detailed description of AI integration into workflows"
+        guidance: |
+          Using plain language, describe how the AI solution integrates into
+          Geisinger workflows. For EACH user role:
+
+          1. User Role: Who will interact with the AI?
+             (e.g., RN, Physician, Care Coordinator, Scheduler)
+
+          2. Interaction Point: Where/when in their workflow?
+             (e.g., During medication administration, At patient intake)
+
+          3. Inputs: What inputs will they provide to the AI?
+             (e.g., Patient symptoms, Lab orders, Clinical notes)
+
+          4. Outputs: What outputs will the AI provide?
+             (e.g., Risk score, Alert, Recommendation, Prediction)
+
+          5. Actions: What actions may they take in response?
+             (e.g., Order labs, Consult specialist, Initiate protocol)
+
+          Template per user role:
+
+          USER ROLE: [Role name]
+          - Interaction point: [When/where they encounter AI]
+          - Inputs provided: [What they input, if any]
+          - AI outputs: [What AI provides to them]
+          - Possible actions: [What they may do in response]
+
+          Example:
+          "USER ROLE: Registered Nurse (RN)
+          - Interaction point: During routine vital signs documentation in Epic
+          - Inputs provided: Vital signs, patient assessment notes
+          - AI outputs: Sepsis risk score (0-100) with contributing factors
+          - Possible actions: Review alert, assess patient, notify physician,
+            initiate sepsis protocol, document clinical judgment
+
+          USER ROLE: Physician
+          - Interaction point: When notified by RN or via Epic In Basket alert
+          - Inputs provided: Clinical judgment, additional assessment
+          - AI outputs: Same risk score with trend over time
+          - Possible actions: Order labs, initiate antibiotics, consult ICU,
+            override alert with documentation"
+        validation:
+          - Must describe at least one user role
+          - For each role, must include all 5 elements
+          - Must use plain language (avoid jargon)
+
+      - id: "technical_integration"
+        name: "Technical Integration"
+        type: "long_text"
+        required: true
+        description: "Technical system integration and data flow"
+        guidance: |
+          Describe technical integration including:
+
+          1. System Integration:
+             - What systems will the AI connect to?
+             - How will data flow between systems?
+             - What APIs or interfaces are required?
+
+          2. Data Flow Diagram:
+             - Provide a text-based or visual data flow diagram
+             - Show: Data sources → AI system → Outputs → User interfaces
+
+          3. Epic/EHR Build Requirements:
+             - BPA (Best Practice Advisory) configuration
+             - Custom flowsheets or documentation tools
+             - Order sets or protocols
+             - In Basket message routing
+             - Reporting requirements
+
+          Example:
+          "System Integration:
+          - Epic (source of patient data via FHIR API)
+          - AI Platform (hosted on Azure, receives data via HL7 feed)
+          - Epic (receives risk scores via API, displays in BPA)
+
+          Data Flow:
+          Epic Flowsheet (Vitals) → HL7 Interface → AI Platform →
+          Risk Calculation → API Response → Epic BPA → Clinician Alert
+
+          Epic Build Requirements:
+          - BPA triggered on vital sign documentation for inpatients
+          - Custom flowsheet row to display risk score and trend
+          - Order set 'Sepsis Protocol' linked from BPA
+          - In Basket message to physician when score > 75
+          - Reporting data mart for outcomes tracking"
+        validation:
+          - Must describe system connections
+          - Must include data flow description
+          - Must specify Epic/EHR build if applicable
+
+      - id: "ai_solution_components"
+        name: "AI Solution Components"
+        type: "long_text"
+        required: true
+        description: "Detailed description of the AI system itself"
+        guidance: |
+          Describe the AI system in detail:
+
+          1. DATA SOURCES:
+             For each data source, specify:
+             - Specific data elements (e.g., "Heart rate, BP, temp from Epic flowsheet")
+             - Frequency of collection (e.g., "Real-time on documentation")
+             - Format of data (e.g., "HL7 ADT messages, FHIR vitals")
+
+          2. AI SYSTEM DETAILS:
+             - Type of AI system in plain language
+               (e.g., "Machine learning model that predicts risk based on patterns")
+             - What the AI predicts/classifies/detects/creates
+             - How often AI outcome is generated
+             - Training data and validation approach (if known)
+
+          3. SYSTEM OUTPUTS:
+             - Format of output (e.g., "Risk score 0-100", "Binary alert", "Text summary")
+             - Where outputs appear (e.g., "Epic BPA", "Dashboard", "Mobile app")
+             - Who will see outputs (be specific about roles)
+             - How outputs will be stored/logged
+
+          Example:
+          "DATA SOURCES:
+          - Vital signs (Epic flowsheet): Heart rate, BP, temp, respiratory rate, O2 sat
+            Frequency: Real-time on RN documentation
+            Format: HL7 ORU messages
+          - Lab results (Epic LIS): WBC, lactate, creatinine
+            Frequency: When resulted
+            Format: HL7 ORU messages
+          - Demographics (Epic ADT): Age, sex, admit diagnosis
+            Frequency: At admission
+            Format: HL7 ADT messages
+
+          AI SYSTEM DETAILS:
+          - Type: Gradient boosting machine learning model trained on 50,000 patient encounters
+          - Prediction: Probability of sepsis onset within next 6 hours
+          - Frequency: Recalculated every 15 minutes for all inpatients
+          - Validation: AUC 0.89 on held-out test set, calibrated on Geisinger data
+
+          SYSTEM OUTPUTS:
+          - Format: Risk score 0-100 with top 3 contributing factors
+          - Display: Epic BPA (score >75), flowsheet row (all patients), analytics dashboard
+          - Visibility: RNs and physicians see BPA and flowsheet; analytics team sees dashboard
+          - Storage: All scores logged to research data warehouse for outcomes tracking"
+        validation:
+          - Must specify data sources with details
+          - Must describe AI system type
+          - Must specify output format and visibility
+
+  # --------------------------------------------------------------------------
+  # Section 4: Success Metrics
+  # --------------------------------------------------------------------------
+  - id: "success_metrics"
+    name: "Measures of Success"
+    order: 4
+    description: "Metrics and outcome measures"
+
+    fields:
+      - id: "metrics"
+        name: "Metrics and Key Outcome Measures"
+        type: "long_text"
+        required: true
+        description: "Project metrics including one primary goal"
+        guidance: |
+          Describe all relevant metrics and elevate ONE as the primary goal.
+
+          Structure:
+
+          PRIMARY GOAL:
+          [The single most important metric for success]
+
+          SECONDARY METRICS:
+          Clinical Outcomes:
+          - [Metric 1 with baseline and target]
+          - [Metric 2 with baseline and target]
+
+          Operational Outcomes:
+          - [Metric 1 with baseline and target]
+          - [Metric 2 with baseline and target]
+
+          Process Measures:
+          - [Metric 1 with baseline and target]
+          - [Metric 2 with baseline and target]
+
+          ANTICIPATED BENEFITS:
+          Clinical Practice:
+          - [Specific change to clinical practice]
+
+          Patient Outcomes:
+          - [Specific improvement in patient outcomes]
+
+          Organizational Performance:
+          - [Specific organizational impact]
+
+          Example:
+          "PRIMARY GOAL:
+          Reduce sepsis mortality rate from 18% to 15% within 18 months
+
+          SECONDARY METRICS:
+          Clinical Outcomes:
+          - Time-to-first antibiotic: 3.2 hrs → 2.0 hrs
+          - Early detection rate: 65% → 85%
+          - ICU admission rate: 35% → 30%
+
+          Operational Outcomes:
+          - Nurse alert burden: Maintain <3 alerts/shift
+          - Alert override rate: Target <15%
+          - Physician response time: Target <30 min
+
+          Process Measures:
+          - Protocol compliance: 70% → 90%
+          - Documentation completion: 85% → 95%
+
+          ANTICIPATED BENEFITS:
+          Clinical Practice:
+          - Earlier intervention enabling better outcomes
+          - Reduced cognitive burden on nursing staff
+          - More consistent application of sepsis protocols
+
+          Patient Outcomes:
+          - Reduced mortality (45 lives saved annually)
+          - Shorter ICU length of stay (0.5 days reduction)
+          - Improved long-term outcomes for survivors
+
+          Organizational Performance:
+          - Cost savings from reduced complications
+          - Improved quality metrics and benchmarking
+          - Enhanced reputation for sepsis care excellence"
+        validation:
+          - Must clearly identify one primary goal
+          - Must include at least 3 secondary metrics
+          - Must describe anticipated benefits
+
+  # --------------------------------------------------------------------------
+  # Section 5: Equity Considerations
+  # --------------------------------------------------------------------------
+  - id: "equity"
+    name: "Equity Considerations"
+    order: 5
+    description: "Equity analysis and disparity assessment"
+    criticality: "high"
+
+    fields:
+      - id: "equity_considerations"
+        name: "Equity Considerations"
+        type: "long_text"
+        required: true
+        description: "Known disparities and equity concerns"
+        guidance: |
+          Address equity comprehensively:
+
+          1. KNOWN DISPARITIES (from literature):
+             - What does published research show about disparities in this clinical area?
+             - What disparities exist with similar AI solutions?
+             - Which populations are affected?
+
+          2. ACCESS BARRIERS:
+             - What groups might face barriers in accessing this solution?
+             - Consider: Language, literacy, digital access, geographic, socioeconomic
+
+          3. BENEFIT DISPARITIES:
+             - Which groups might benefit more or less from this solution?
+             - Why might the solution work differently for different populations?
+
+          4. STATUS QUO COMPARISON:
+             - What disparities exist in the current process?
+             - What would happen without this AI solution?
+             - Would the next best alternative be better or worse for equity?
+
+          5. MITIGATION PLANS:
+             - What will be done to address identified concerns?
+             - How will equity be monitored after implementation?
+
+          Note: A detailed equity analysis may be conducted during the design
+          phase if this project moves forward.
+
+          Example:
+          "KNOWN DISPARITIES:
+          - Literature shows sepsis mortality is 20% higher in Black patients vs. White patients
+          - Similar early warning systems have shown lower sensitivity for Hispanic patients
+          - Socioeconomically disadvantaged patients have delayed presentations
+
+          ACCESS BARRIERS:
+          - Solution requires Epic documentation - no barrier (all inpatients in Epic)
+          - Alert delivery through Epic - all clinical staff have access
+          - No patient-facing component that would create access barriers
+
+          BENEFIT DISPARITIES:
+          - Model trained predominantly on White patient population
+          - Risk: May not perform equally well across all racial/ethnic groups
+          - Geographic variation: Community hospitals may have different case mix
+
+          STATUS QUO COMPARISON:
+          - Current manual screening has implicit bias concerns
+          - Current disparities in sepsis outcomes unlikely to improve without intervention
+          - AI solution provides opportunity to reduce variability in detection
+
+          MITIGATION PLANS:
+          - Validate model performance across racial/ethnic subgroups before deployment
+          - Monitor alert rates and outcomes by demographic groups monthly
+          - Conduct detailed equity analysis during design phase
+          - Include community hospital data in ongoing model refinement
+          - Train clinical staff on potential for algorithmic bias"
+        validation:
+          - Must address known disparities
+          - Must identify potential barriers
+          - Must compare to status quo
+          - Should include mitigation plans
+
+  # --------------------------------------------------------------------------
+  # Section 6: Risk Assessment
+  # --------------------------------------------------------------------------
+  - id: "risk_assessment"
+    name: "Risks"
+    order: 6
+    description: "Comprehensive risk analysis"
+    criticality: "high"
+
+    fields:
+      - id: "risks"
+        name: "Risk Assessment"
+        type: "long_text"
+        required: true
+        description: "Potential risks and mitigation strategies"
+        guidance: |
+          Provide comprehensive risk assessment:
+
+          For EACH identified risk, address:
+
+          1. RISK DESCRIPTION:
+             What could go wrong?
+
+          2. SCENARIOS:
+             - AI works as designed but has unintended consequences
+             - AI makes mistakes or fails to work properly
+             - System integration failures
+
+          3. IMPACT ASSESSMENT:
+             - Patient care impact
+             - Legal/compliance impact
+             - Financial impact
+             - Operational impact
+
+          4. LIKELIHOOD:
+             - How likely is this risk? (Low/Medium/High)
+             - What evidence supports this assessment?
+
+          5. SEVERITY:
+             - How serious would the impact be? (Low/Medium/High/Critical)
+             - Could this cause patient harm?
+
+          6. COMPARISON:
+             - Is this risk better, worse, or same as current process?
+             - What is the baseline risk level?
+
+          7. MITIGATION:
+             - What steps will prevent this risk?
+             - What monitoring will detect this risk?
+             - What response plan exists if risk occurs?
+
+          Template per risk:
+
+          RISK: [Description]
+          Scenario: [When/how this occurs]
+          Impact: [Patient care / Legal / Financial / Operational]
+          Likelihood: [Low/Medium/High] - [Evidence]
+          Severity: [Low/Medium/High/Critical] - [Why]
+          Comparison: [Better/Worse/Same as current process]
+          Mitigation:
+          - Prevention: [Steps to prevent]
+          - Detection: [How we'll know if it happens]
+          - Response: [What we'll do if it happens]
+
+          Example:
+          "RISK: False negative - AI fails to flag high-risk sepsis patient
+          Scenario: AI algorithm misses early sepsis due to atypical presentation
+          Impact:
+          - Patient care: Delayed treatment, potential mortality
+          - Legal: Potential malpractice claim if harm occurs
+          - Financial: Costs of complications, potential litigation
+          - Operational: Loss of clinician trust in system
+          Likelihood: Low - Validation showed 95% sensitivity
+          Severity: Critical - Could result in preventable death
+          Comparison: Similar to current manual screening (93% sensitivity)
+          Mitigation:
+          - Prevention: Maintain manual screening as backup; set conservative threshold
+          - Detection: Daily monitoring of missed cases via chart review
+          - Response: Clinical safety committee reviews all misses; model retraining if pattern emerges
+
+          RISK: Alert fatigue - Too many false positive alerts
+          Scenario: AI generates alerts for low-risk patients, staff begins ignoring alerts
+          Impact:
+          - Patient care: Real alerts may be missed due to fatigue
+          - Legal: Documentation of alert override without assessment
+          - Financial: Wasted clinical time, unnecessary interventions
+          - Operational: Decreased workflow efficiency, staff dissatisfaction
+          Likelihood: Medium - Common with early warning systems
+          Severity: High - Could negate benefits of system
+          Comparison: Worse than current process if not managed properly
+          Mitigation:
+          - Prevention: Tune threshold to target <3 alerts per shift; train staff on appropriate response
+          - Detection: Weekly monitoring of alert rates and override rates by unit
+          - Response: Rapid threshold adjustment if override rate >20%; retraining if needed
+
+          RISK: Model performance degradation over time
+          Scenario: Patient population or clinical practices change, model becomes less accurate
+          Impact:
+          - Patient care: Reduced effectiveness of early detection
+          - Legal: Potential liability if known degradation not addressed
+          - Financial: Investment not delivering expected value
+          - Operational: Need for model retraining and validation
+          Likelihood: Medium - Common with deployed ML models
+          Severity: Medium - Gradual impact allows time to respond
+          Comparison: N/A - New risk introduced by AI
+          Mitigation:
+          - Prevention: Quarterly model performance monitoring; annual revalidation
+          - Detection: Automated performance dashboards tracking AUC, calibration
+          - Response: Model retraining protocol; escalation to vendor if vendor solution"
+        validation:
+          - Must identify at least 3 distinct risks
+          - For each risk, must assess likelihood and severity
+          - Must compare to current process
+          - Must provide mitigation strategy
+
+  # --------------------------------------------------------------------------
+  # Section 7: Potential Benefits
+  # --------------------------------------------------------------------------
+  - id: "benefits"
+    name: "Potential Benefits"
+    order: 7
+    description: "Expected value creation and impact"
+
+    fields:
+      - id: "potential_benefits"
+        name: "Potential Benefits"
+        type: "long_text"
+        required: true
+        description: "Quantified benefits across patient care, operations, and finance"
+        guidance: |
+          Describe how the AI solution will create value. Provide best estimates
+          even if exact numbers aren't known at this stage.
+
+          Structure your response:
+
+          1. PATIENT CARE BENEFITS:
+             Volume Impact:
+             - How many patients could benefit per year?
+             - What percentage of target population?
+
+             Care Improvements:
+             - What specific improvements in care quality?
+             - What clinical outcomes will improve?
+             - How much improvement expected?
+
+             Example with calculations:
+             "Volume: 15,000 at-risk patients screened annually
+              Impact: Early detection for 85% vs. 65% = 3,000 additional early detections
+              Outcome: Mortality reduction from 18% to 15% = 45 lives saved annually
+              Calculation: 15,000 patients × 18% baseline mortality = 2,700 deaths
+                          15,000 patients × 15% target mortality = 2,250 deaths
+                          Difference = 450 lives saved (estimated 45 in year 1 with ramp-up)"
+
+          2. OPERATIONAL BENEFITS:
+             Efficiency Gains:
+             - How much staff time saved?
+             - Which workflows improve?
+             - Impact on capacity?
+
+             Example with calculations:
+             "Time savings: RN manual screening takes 10 min per patient per shift
+              Automation: AI provides continuous monitoring
+              Savings: 10 min × 3 shifts × 500 patients daily = 250 hours/day
+              Impact: Allows reallocation to direct patient care"
+
+          3. FINANCIAL BENEFITS:
+             Cost Reductions:
+             - What costs will be reduced?
+             - How were savings calculated?
+
+             Revenue Impact:
+             - Quality metric improvements?
+             - Throughput improvements?
+
+             Example with calculations:
+             "Cost avoidance: Sepsis complications cost avg $25,000 per case
+              Impact: Preventing 100 severe complications annually
+              Savings: 100 cases × $25,000 = $2.5M annually
+
+              LOS reduction: 0.5 days × 1,000 patients × $2,000/day = $1M annually
+
+              Total financial benefit: $3.5M annually
+              Less: Implementation cost $500K + Annual maintenance $200K
+              Net benefit: $2.8M annually starting year 2"
+
+          4. ASSUMPTIONS:
+             List all assumptions used in calculations:
+             - Data sources
+             - Baseline metrics
+             - Expected impact sizes
+             - Cost estimates
+
+          Example:
+          "Assumptions:
+          - Baseline sepsis mortality from Geisinger quality dashboard (18%)
+          - Target mortality based on literature review of similar interventions (15%)
+          - Patient volume from Epic data warehouse (15,000 at-risk patients/year)
+          - Complication costs from finance department cost accounting
+          - Implementation timeline assumes 6-month ramp-up to full adoption"
+
+          Note: These estimates will be refined during design phase, but rough
+          estimates help stakeholders understand potential impact.
+        validation:
+          - Must quantify patient care benefits
+          - Must quantify operational benefits
+          - Must estimate financial impact
+          - Must show calculations and assumptions
+          - Should include both best-case and conservative estimates
+
+# ============================================================================
+# Quality Standards
+# ============================================================================
+
+quality_standards:
+  completeness:
+    description: "All required fields must be completed with sufficient detail"
+    requirements:
+      - All required fields populated
+      - Each field meets minimum content requirements
+      - Supporting data provided where requested
+      - Calculations shown for quantitative claims
+
+  clarity:
+    description: "Form must be understandable by non-technical stakeholders"
+    requirements:
+      - Plain language used throughout
+      - Technical jargon explained or avoided
+      - Specific examples provided
+      - Clear cause-and-effect relationships
+
+  evidence_based:
+    description: "Claims must be supported by data or evidence"
+    requirements:
+      - Baseline metrics cited with sources
+      - Literature references for known disparities
+      - Calculations shown for benefit estimates
+      - Assumptions clearly stated
+
+  actionable:
+    description: "Sufficient detail for stakeholder decision-making"
+    requirements:
+      - Workflow integration specific enough to assess feasibility
+      - Risks specific enough to evaluate and mitigate
+      - Benefits quantified enough to justify investment
+      - Success metrics specific enough to track
+
+# ============================================================================
+# Review and Approval Process
+# ============================================================================
+
+review_process:
+  reviewers:
+    - role: "Clinical Lead"
+      focus: "Clinical workflow integration, patient safety, clinical benefits"
+
+    - role: "IT/Technical Lead"
+      focus: "Technical feasibility, system integration, data requirements"
+
+    - role: "Compliance/Legal"
+      focus: "Regulatory compliance, risk assessment, legal implications"
+
+    - role: "Equity and Inclusion"
+      focus: "Equity analysis, disparity assessment, access considerations"
+
+    - role: "Finance"
+      focus: "Cost-benefit analysis, financial projections, ROI"
+
+    - role: "Executive Sponsor"
+      focus: "Strategic alignment, resource allocation, final approval"
+
+  approval_criteria:
+    - "Problem is well-defined with supporting data"
+    - "AI approach is justified over alternatives"
+    - "Workflow integration is feasible and specific"
+    - "Risks are identified and have mitigation plans"
+    - "Benefits are quantified and justify investment"
+    - "Equity considerations are addressed"
+    - "Success metrics are measurable and tracked"
+
+# ============================================================================
+# Agent Guidance
+# ============================================================================
+
+agent_instructions:
+  when_to_create:
+    - "User requests creation of AI Discovery Form"
+    - "User asks for help documenting a proposed AI program"
+    - "User needs to prepare a program proposal for review"
+
+  how_to_create:
+    approach: |
+      1. Gather Information:
+         - Interview user about the AI program
+         - Ask clarifying questions for each section
+         - Request supporting data and documentation
+
+      2. Draft Form:
+         - Start with basic information (easier questions)
+         - Move to problem definition and approach
+         - End with benefits, risks, equity (require more thought)
+         - Use templates and examples from this blueprint
+
+      3. Ensure Quality:
+         - Verify all required fields are complete
+         - Check that quantitative claims have calculations
+         - Confirm plain language is used
+         - Validate that detail is sufficient for decision-making
+
+      4. Iterate:
+         - Review draft with user
+         - Identify gaps or areas needing more detail
+         - Refine until form meets quality standards
+
+  common_challenges:
+    - challenge: "User doesn't have all required information"
+      solution: "Help identify information sources; create placeholders for follow-up"
+
+    - challenge: "Benefits are overstated without supporting data"
+      solution: "Ask for baseline metrics; help create conservative estimates"
+
+    - challenge: "Risks are underestimated or missing"
+      solution: "Prompt with common AI risks; ask 'what could go wrong?'"
+
+    - challenge: "Workflow integration is too vague"
+      solution: "Ask specific questions about each user role; use template"
+
+    - challenge: "Equity section is incomplete"
+      solution: "Prompt for literature review; ask about access barriers"
+
+  key_principles:
+    - "This is a foundational document - quality matters"
+    - "Stakeholders will use this to make high-stakes decisions"
+    - "Be thorough but not overwhelming"
+    - "Use plain language - assume non-technical audience"
+    - "Quantify wherever possible, but show assumptions"
+    - "Address hard questions (risks, equity) directly"
+    - "Think like a reviewer - what would you need to know?"
+
+# ============================================================================
+# Related Documents and References
+# ============================================================================
+
+related_documents:
+  - "meta-blueprint.yaml - Governance policies"
+  - "product-mgmt-blueprint.yaml - Product management process"
+  - "risk-assessment-questions.yaml - 5-question risk screener"
+
+references:
+  - name: "Geisinger AI Governance Policy"
+    description: "Organizational policies for AI development and deployment"
+
+  - name: "Epic Integration Standards"
+    description: "Technical standards for EHR integration"
+
+  - name: "Health Equity Framework"
+    description: "Framework for equity analysis in healthcare programs"
