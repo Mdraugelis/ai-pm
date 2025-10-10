@@ -148,6 +148,12 @@ pytest tests/integration/test_pm_agent_integration.py -v -m integration
    Get one at: https://console.anthropic.com/
 
 ### Optional
+- **Brave Search API Key** (for real web search - uses mock results without it)
+  ```bash
+  export BRAVE_SEARCH_API_KEY=your-brave-api-key
+  ```
+  Get free tier (2,000 queries/month) at: https://brave.com/search/api/
+
 - Configuration file (`config/development.yaml`) - auto-created if missing
 - Blueprint files in `docs/blueprints/` - loaded if available
 - PostgreSQL database - not required for demo/examples

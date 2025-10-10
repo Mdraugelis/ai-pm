@@ -72,6 +72,15 @@ hitl:
 
 # Tool Configuration
 tools:
+  web_search:
+    enabled: true
+    provider: "brave"  # Brave Search API
+    api_key: ${BRAVE_SEARCH_API_KEY}  # From environment (optional - uses mock if not set)
+    timeout_seconds: 30
+    max_results: 10
+    retry_attempts: 3
+    cache_ttl_seconds: 3600  # Cache results for 1 hour
+
   servicenow:
     enabled: true
     timeout_seconds: 30

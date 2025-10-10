@@ -1279,6 +1279,150 @@ tools:
 
 ---
 
+## 🔍 Web Search Integration
+
+The AI Product Manager Agent uses **web search** to gather real-time information during the Discovery Workflow. This enables evidence-based research with actual web sources and citations.
+
+### How It Works
+
+During the Discovery Workflow, the agent:
+1. **Step 2 (Research Vendor)**: Searches for vendor capabilities, healthcare implementations, case studies
+2. **Step 3 (Research Use Case)**: Searches for best practices, ROI metrics, equity considerations
+3. **Synthesis**: LLM analyzes search results to extract insights
+4. **Citations**: All Discovery Forms include actual web sources
+
+### Search Provider: Brave Search API
+
+We use **Brave Search API** for privacy-focused, high-quality web search:
+- ✅ **Privacy-focused**: No tracking, anonymous searches
+- ✅ **Free tier**: 2,000 queries/month
+- ✅ **Healthcare-appropriate**: Ethical search provider
+- ✅ **High quality**: Independent search index
+- ✅ **Simple API**: Clean JSON responses
+
+### Setup
+
+#### 1. Get Brave Search API Key (Optional)
+
+Without an API key, the system uses mock search results (for testing/demo).
+
+For real web search:
+
+1. Go to [Brave Search API](https://brave.com/search/api/)
+2. Sign up for free tier (2,000 queries/month)
+3. Get your API key
+
+#### 2. Configure Environment
+
+```bash
+# Add to .env file
+BRAVE_SEARCH_API_KEY=your-api-key-here
+
+# Or export in shell
+export BRAVE_SEARCH_API_KEY=your-api-key-here
+```
+
+#### 3. Test Web Search
+
+```python
+from src.tools.web_search_tool import WebSearchTool
+from src.tools.base import ExecutionContext
+
+# Initialize tool
+tool = WebSearchTool()
+
+# Execute search
+context = ExecutionContext(session_id="test")
+result = await tool.execute(
+    {"query": "Epic Healthcare AI capabilities"},
+    context
+)
+
+# View results
+for r in result.data["results"]:
+    print(f"{r['title']}: {r['url']}")
+```
+
+### Usage in ProductManagerAgent
+
+The agent automatically uses web search in research methods:
+
+```python
+# Research vendor (uses 3 web searches)
+vendor_info = await agent.research_vendor("Epic Systems")
+print(vendor_info["sources"])  # Real web URLs
+
+# Research use case (uses 4 web searches)
+use_case_info = await agent.research_use_case(
+    "inbox prioritization",
+    "Cardiology"
+)
+print(use_case_info["sources"])  # Real web URLs
+```
+
+### Search Queries Used
+
+**Vendor Research** (3 queries):
+- `"{vendor} healthcare AI capabilities"`
+- `"{vendor} AI products features"`
+- `"{vendor} healthcare implementations case studies"`
+
+**Use Case Research** (4 queries):
+- `"{use_case} in {department} challenges solutions"`
+- `"{use_case} AI healthcare best practices"`
+- `"{use_case} ROI metrics {department} outcomes"`
+- `"{use_case} AI bias equity considerations"`
+
+### Caching
+
+Search results are cached for 1 hour (configurable):
+- Reduces API calls
+- Faster subsequent searches
+- Configurable TTL in `config/development.yaml`
+
+### Configuration
+
+```yaml
+# config/development.yaml
+tools:
+  web_search:
+    enabled: true
+    provider: "brave"
+    api_key: ${BRAVE_SEARCH_API_KEY}  # Optional - uses mock if not set
+    timeout_seconds: 30
+    max_results: 10
+    retry_attempts: 3
+    cache_ttl_seconds: 3600  # 1 hour cache
+```
+
+### Mock Mode (No API Key)
+
+If no API key is configured, web search automatically uses **mock results**:
+- Useful for testing and development
+- No API calls or costs
+- Realistic result structure
+- Clearly marked as mock in metadata
+
+### Testing
+
+```bash
+# Unit tests (uses mocks)
+pytest tests/unit/test_tools/test_web_search_tool.py -v
+
+# Integration test (requires API key)
+BRAVE_SEARCH_API_KEY=your-key pytest tests/integration/ -v -k web_search
+```
+
+### Benefits
+
+1. ✅ **Real-time information**: Current vendor capabilities, not just LLM training data
+2. ✅ **Evidence-based**: Actual web sources for Discovery Forms
+3. ✅ **Better quality**: Real case studies, implementations, metrics
+4. ✅ **Audit trail**: Proper citations for governance compliance
+5. ✅ **PHI-protected**: Only searches public web (no patient data)
+
+---
+
 ## 🔗 Azure DevOps Integration
 
 The AI Product Manager Agent integrates with Azure DevOps to manage work items, boards, and projects. This enables the agent to track AI initiatives in your existing Azure DevOps workflow.
