@@ -10,6 +10,12 @@ agent:
   max_iterations: 10
   confidence_threshold: 0.7
 
+  # SDK Integration Settings
+  sdk:
+    retry_attempts: 3
+    timeout_seconds: 60
+    streaming_enabled: false  # Enable for UI feedback
+
   context_budget:
     total_tokens: 200000
     meta_blueprint: 2000
