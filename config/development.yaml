@@ -135,6 +135,10 @@ blueprints:
   strategy:
     ai_product_manager: "ai-product-manager-strategy.yaml"
 
+  # Agent Workflows
+  workflows:
+    discovery: "discovery-workflow.yaml"
+
   reload_on_change: true  # Auto-reload in dev
 
 # Logging Configuration

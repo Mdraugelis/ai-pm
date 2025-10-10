@@ -1,0 +1,1041 @@
+# Discovery Workflow Blueprint
+# Geisinger AI Product Manager Agent - Agent Workflow
+# Version: 1.0
+
+name: "AI Discovery Form Generation Workflow"
+type: "agent_workflow"
+domain: "product_management"
+version: "1.0"
+criticality: "foundational"
+
+description: |
+  Structured workflow for agents to generate comprehensive AI Discovery Forms
+  from ServiceNow intake tickets or user input. This workflow guides the agent
+  through research, synthesis, and document generation with built-in verification.
+
+  The workflow implements the agent loop: Gather → Plan → Act → Verify → Iterate
+
+# ============================================================================
+# Workflow Overview
+# ============================================================================
+
+workflow_overview:
+  objective: |
+    Generate a high-quality, complete AI Discovery Form that meets Geisinger's
+    governance requirements and provides stakeholders with sufficient information
+    for decision-making.
+
+  inputs:
+    - ServiceNow ticket number (e.g., INC0012345)
+    - OR initiative description from user
+    - OR existing intake brief
+
+  outputs:
+    - Completed AI Discovery Form (7 sections)
+    - Research citations and sources
+    - Confidence assessment
+    - Gaps and recommendations for human input
+
+  success_criteria:
+    - All required sections populated
+    - Plain language throughout
+    - Evidence-based claims with citations
+    - Equity and risk analysis complete
+    - Self-verification passes
+    - Ready for stakeholder review
+
+  typical_duration: "2-4 hours (agent time)"
+
+  human_in_the_loop:
+    - Review and approve draft (Tier 3)
+    - Provide domain expertise where needed
+    - Approve final form for submission
+
+# ============================================================================
+# Workflow Steps
+# ============================================================================
+
+steps:
+  # --------------------------------------------------------------------------
+  # Step 1: Extract Basics
+  # --------------------------------------------------------------------------
+  - step_number: 1
+    step_id: "extract_basics"
+    name: "Extract Basics from Source"
+    objective: |
+      Extract fundamental information from ServiceNow ticket or user input:
+      vendor, use case, problem, department, stakeholders.
+
+    agent_actions:
+      gather:
+        - "Retrieve ServiceNow ticket via API (if ticket number provided)"
+        - "Parse ticket description and fields"
+        - "Extract key entities (vendor, technology, use case, department)"
+        - "Load existing intake brief (if available)"
+
+      plan:
+        - "Identify what information is present vs. missing"
+        - "Determine if ticket provides sufficient context"
+        - "Plan follow-up questions if needed"
+
+      act:
+        - "Extract structured data from unstructured text"
+        - "Normalize vendor names and technology terms"
+        - "Categorize use case (clinical, operational, administrative)"
+
+    tools_used:
+      - "servicenow_client (retrieve ticket)"
+      - "document_parser (extract entities)"
+
+    outputs:
+      extracted_data:
+        - "vendor_name (normalized)"
+        - "technology_type (e.g., 'NLP', 'Computer Vision', 'Predictive Model')"
+        - "use_case_category (e.g., 'Clinical Decision Support', 'Workflow Optimization')"
+        - "use_case_description"
+        - "department(s)"
+        - "program_owner"
+        - "executive_champion (if mentioned)"
+        - "problem_statement_draft"
+
+    verification_criteria:
+      must_have:
+        - "vendor_identified: Vendor name extracted and normalized"
+        - "use_case_clear: Use case is understandable and categorized"
+        - "problem_articulated: Problem statement exists (even if draft)"
+
+      should_have:
+        - "department_known: At least one department identified"
+        - "stakeholders_identified: Program owner or champion mentioned"
+
+    next_steps:
+      if_verification_passes:
+        - "Proceed to Step 2: Research Vendor"
+
+      if_verification_fails:
+        - "Ask user clarifying questions"
+        - "Search for additional context in related tickets"
+        - "Make reasonable assumptions and flag for human review"
+
+    example:
+      input: "SNOW ticket INC0012345: 'Explore Epic's AI Inbox Prioritization for Cardiology'"
+      output:
+        vendor_name: "Epic Systems"
+        technology_type: "NLP / Machine Learning"
+        use_case_category: "Workflow Optimization"
+        use_case_description: "AI-powered inbox message prioritization for cardiologists"
+        department: "Cardiology"
+        problem_statement_draft: "Cardiologists receive 200+ inbox messages daily, leading to delays in addressing urgent patient needs"
+
+  # --------------------------------------------------------------------------
+  # Step 2: Research Vendor
+  # --------------------------------------------------------------------------
+  - step_number: 2
+    step_id: "research_vendor"
+    name: "Research Vendor Capabilities"
+    objective: |
+      Gather comprehensive information about the AI vendor, their technology,
+      healthcare experience, and integration requirements.
+
+    agent_actions:
+      gather:
+        - "Load vendor information from previous initiatives (if exists)"
+        - "Identify what is known vs. unknown about vendor"
+
+      plan:
+        - "Generate targeted search queries"
+        - "Prioritize queries based on information gaps"
+        - "Plan to search vendor website, case studies, documentation"
+
+      act:
+        - "Execute web searches with structured queries"
+        - "Parse and extract relevant information"
+        - "Synthesize findings into structured format"
+        - "Cite all sources"
+
+    tools_used:
+      - "web_search (search engine queries)"
+      - "web_fetch (retrieve specific URLs)"
+      - "vendor_scanner (structured vendor research)"
+
+    search_queries:
+      primary:
+        - "{vendor} healthcare AI capabilities"
+        - "{vendor} {technology} features and benefits"
+        - "{vendor} healthcare clients and case studies"
+        - "{vendor} Epic integration" # if Epic is EHR
+        - "{vendor} implementation requirements"
+
+      secondary:
+        - "{vendor} pricing model healthcare"
+        - "{vendor} regulatory compliance HIPAA"
+        - "{vendor} AI model transparency"
+        - "{vendor} bias and fairness testing"
+
+      tertiary:
+        - "{vendor} customer reviews healthcare"
+        - "{vendor} compared to competitors"
+        - "{vendor} known issues or challenges"
+
+    outputs:
+      vendor_profile:
+        basic_info:
+          - "Company name and headquarters"
+          - "Years in healthcare AI"
+          - "Number of healthcare clients"
+          - "Relevant certifications (HIPAA, SOC 2, etc.)"
+
+        technology:
+          - "AI/ML technology stack"
+          - "Model types used (NLP, CV, etc.)"
+          - "Training data sources and quality"
+          - "Model transparency and explainability"
+
+        healthcare_experience:
+          - "Similar use cases at other health systems"
+          - "Published case studies or outcomes"
+          - "References from peer institutions"
+
+        integration:
+          - "EHR integration capabilities (Epic, Cerner, etc.)"
+          - "API requirements and standards"
+          - "Infrastructure requirements (cloud, on-prem)"
+          - "Implementation timeline estimates"
+
+        business_model:
+          - "Pricing structure (license, per-use, etc.)"
+          - "Support and maintenance included"
+          - "Contract terms and renewal"
+
+      citations:
+        - "List of URLs and sources consulted"
+        - "Publication dates"
+        - "Credibility assessment"
+
+    verification_criteria:
+      must_have:
+        - "vendor_capabilities_documented: Core AI capabilities identified"
+        - "healthcare_experience_verified: Evidence of healthcare deployments"
+        - "integration_requirements_known: Technical requirements documented"
+
+      should_have:
+        - "case_studies_found: At least one similar use case documented"
+        - "pricing_estimated: Rough cost estimate available"
+
+    next_steps:
+      if_verification_passes:
+        - "Proceed to Step 3: Research Use Case"
+
+      if_information_gaps:
+        - "Flag gaps for human follow-up with vendor"
+        - "Make reasonable assumptions based on industry standards"
+        - "Proceed with available information"
+
+    example:
+      vendor: "Epic Systems"
+      findings:
+        - "Epic In Basket AI uses NLP to prioritize messages based on urgency and content"
+        - "Deployed at 50+ health systems including Mayo Clinic, Cleveland Clinic"
+        - "Native Epic integration (no third-party APIs needed)"
+        - "Typical implementation: 3-6 months"
+        - "Pricing: Included in Epic AI subscription tier"
+
+  # --------------------------------------------------------------------------
+  # Step 3: Research Use Case
+  # --------------------------------------------------------------------------
+  - step_number: 3
+    step_id: "research_use_case"
+    name: "Research Clinical/Business Use Case"
+    objective: |
+      Understand the clinical or operational problem deeply, including current
+      workflows, known solutions, evidence base, and success metrics.
+
+    agent_actions:
+      gather:
+        - "Search for literature on the problem domain"
+        - "Find best practices and guidelines"
+        - "Identify common solutions and their effectiveness"
+
+      plan:
+        - "Generate queries for problem understanding"
+        - "Search for evidence of ROI and outcomes"
+        - "Look for equity and bias research in this domain"
+
+      act:
+        - "Execute comprehensive search across multiple sources"
+        - "Synthesize findings into problem context"
+        - "Extract metrics and benchmarks"
+        - "Identify potential risks and considerations"
+
+    tools_used:
+      - "web_search (academic and industry sources)"
+      - "web_fetch (retrieve specific studies or guidelines)"
+
+    search_queries:
+      problem_understanding:
+        - "{use_case} in healthcare challenges"
+        - "{use_case} workflow inefficiencies"
+        - "{use_case} current process limitations"
+        - "{use_case} clinician burden"
+
+      solutions_and_evidence:
+        - "{use_case} AI solutions best practices"
+        - "{use_case} automation evidence"
+        - "{use_case} AI effectiveness studies"
+        - "{use_case} implementation case studies healthcare"
+
+      metrics_and_roi:
+        - "{use_case} ROI metrics healthcare"
+        - "{use_case} time savings quantified"
+        - "{use_case} cost reduction healthcare"
+        - "{use_case} quality improvement metrics"
+
+      equity_and_bias:
+        - "{use_case} health disparities"
+        - "{use_case} AI bias concerns"
+        - "{use_case} equity considerations"
+        - "{use_case} demographic differences outcomes"
+
+      risks_and_challenges:
+        - "{use_case} AI failure modes"
+        - "{use_case} implementation challenges"
+        - "{use_case} unintended consequences"
+        - "{use_case} regulatory considerations"
+
+    outputs:
+      problem_context:
+        current_state:
+          - "How problem manifests today"
+          - "Scope and scale (patients, staff, frequency)"
+          - "Current workflow description"
+          - "Pain points and inefficiencies"
+
+        root_causes:
+          - "Why problem exists"
+          - "Barriers to improvement"
+          - "Previous solution attempts and results"
+
+        evidence_base:
+          - "Published research on problem"
+          - "Industry benchmarks"
+          - "Peer institution experiences"
+
+      solution_landscape:
+        ai_approaches:
+          - "Common AI/ML approaches for this problem"
+          - "Effectiveness evidence"
+          - "Key success factors"
+
+        alternatives:
+          - "Non-AI solutions considered or tried"
+          - "Why AI may be superior (or not)"
+          - "Hybrid approaches"
+
+      success_metrics:
+        primary_metrics:
+          - "Most important outcome measures"
+          - "Typical improvement targets"
+          - "Measurement methods"
+
+        secondary_metrics:
+          - "Operational efficiency gains"
+          - "User satisfaction"
+          - "Adoption rates"
+
+      equity_considerations:
+        known_disparities:
+          - "Documented disparities in this clinical area"
+          - "Populations at risk"
+          - "Evidence from similar AI solutions"
+
+        considerations:
+          - "Potential for differential impact"
+          - "Access barriers"
+          - "Mitigation strategies from literature"
+
+      risks_and_challenges:
+        - "Known failure modes"
+        - "Implementation challenges"
+        - "Regulatory requirements"
+        - "Change management needs"
+
+      citations:
+        - "PubMed articles"
+        - "Industry reports"
+        - "Vendor white papers"
+        - "Health system case studies"
+
+    verification_criteria:
+      must_have:
+        - "problem_understood: Clear understanding of clinical/operational problem"
+        - "evidence_found: At least some research or case studies identified"
+        - "metrics_identified: Success metrics proposed"
+
+      should_have:
+        - "equity_research_complete: Known disparities documented"
+        - "risks_cataloged: Potential risks identified"
+        - "benchmarks_available: Industry benchmarks found"
+
+    next_steps:
+      if_verification_passes:
+        - "Proceed to Step 4: Synthesize Context"
+
+      if_gaps_remain:
+        - "Flag areas lacking evidence"
+        - "Note where expert input needed"
+        - "Proceed with caveats"
+
+    example:
+      use_case: "Physician Inbox Message Prioritization"
+      findings:
+        problem:
+          - "Physicians receive avg 200+ messages/day (JAMIA 2023)"
+          - "60% of messages could wait, but hard to triage without reading (JAMA IM 2022)"
+          - "Leads to after-hours work, burnout, delayed responses to urgent issues"
+
+        solutions:
+          - "AI-powered triage reduces review time by 30-40% (Mayo study)"
+          - "NLP can classify urgency with 85-90% accuracy (Stanford study)"
+          - "Requires continuous retraining as message patterns change"
+
+        metrics:
+          - "Primary: Time to address urgent messages"
+          - "Secondary: Total inbox processing time, after-hours work reduction"
+
+        equity:
+          - "Risk: Messages from non-English speakers may be deprioritized if NLP not trained on diverse language"
+          - "Mitigation: Ensure training data includes diverse patient communication styles"
+
+  # --------------------------------------------------------------------------
+  # Step 4: Synthesize Context
+  # --------------------------------------------------------------------------
+  - step_number: 4
+    step_id: "synthesize_context"
+    name: "Synthesize Comprehensive Understanding"
+    objective: |
+      Combine vendor research, use case research, and source material into
+      a coherent understanding ready for form generation.
+
+    agent_actions:
+      gather:
+        - "Retrieve all research findings from Steps 2-3"
+        - "Load intake brief (if available)"
+        - "Review AI Discovery Form template requirements"
+
+      plan:
+        - "Map research findings to form sections"
+        - "Identify what can be auto-populated vs. needs expert input"
+        - "Determine confidence level for each section"
+
+      act:
+        - "Create structured synthesis of all findings"
+        - "Reconcile any conflicting information"
+        - "Generate initial content for each form section"
+        - "Flag gaps and uncertainties"
+
+    memory_required: true
+    reasoning: |
+      This step requires the agent to hold multiple pieces of information in
+      working memory and synthesize them into coherent narratives. Context
+      budget should be managed carefully.
+
+    outputs:
+      synthesis:
+        vendor_solution_fit:
+          - "How vendor capabilities map to use case needs"
+          - "Strengths and limitations"
+          - "Implementation feasibility assessment"
+
+        problem_solution_alignment:
+          - "Why AI addresses this problem"
+          - "Evidence supporting approach"
+          - "Alternatives considered and dismissed"
+
+        workflow_integration_draft:
+          - "How solution fits into current workflow"
+          - "User roles and interactions"
+          - "Technical integration points"
+
+        metrics_framework:
+          - "Primary and secondary metrics"
+          - "Baseline and target values"
+          - "Measurement approach"
+
+        equity_risk_synthesis:
+          - "Known disparities in clinical area"
+          - "AI-specific equity concerns"
+          - "Risk mitigation strategies"
+          - "Potential benefits and harms"
+
+        gaps_and_assumptions:
+          - "What information is missing"
+          - "Assumptions made"
+          - "Where expert input needed"
+
+      confidence_assessment:
+        overall_confidence: "0.0 to 1.0 score"
+
+        confidence_by_section:
+          basic_information: "high/medium/low"
+          problem_definition: "high/medium/low"
+          approach: "high/medium/low"
+          success_metrics: "high/medium/low"
+          equity_considerations: "high/medium/low"
+          risk_assessment: "high/medium/low"
+          potential_benefits: "high/medium/low"
+
+        confidence_reasoning:
+          - "What drives high confidence"
+          - "What causes uncertainty"
+          - "How to increase confidence"
+
+    verification_criteria:
+      must_have:
+        - "synthesis_complete: All research integrated into coherent narrative"
+        - "form_sections_mapped: Know what goes in each section"
+        - "gaps_identified: Clear on what's missing"
+
+      should_have:
+        - "confidence_high: Overall confidence >70%"
+        - "contradictions_resolved: Conflicting info reconciled"
+
+    next_steps:
+      if_verification_passes:
+        - "Proceed to Step 5: Draft Form"
+
+      if_confidence_low:
+        - "Identify specific information gaps"
+        - "Suggest additional research or expert consultation"
+        - "Proceed with caveats"
+
+    example:
+      synthesis_summary: |
+        Epic In Basket AI addresses physician inbox overload by using NLP to
+        prioritize messages. Evidence shows 30-40% time savings. Fits naturally
+        into Epic workflow. Main risk: potential bias against non-English messages.
+        Need clinical input on: specific Cardiology workflow nuances, acceptable
+        false positive rate, integration with existing protocols.
+
+  # --------------------------------------------------------------------------
+  # Step 5: Draft AI Discovery Form
+  # --------------------------------------------------------------------------
+  - step_number: 5
+    step_id: "draft_form"
+    name: "Generate AI Discovery Form"
+    objective: |
+      Populate all 7 sections of the AI Discovery Form with synthesized
+      information, using plain language and evidence-based content.
+
+    agent_actions:
+      gather:
+        - "Load AI Discovery Form template"
+        - "Retrieve synthesis from Step 4"
+        - "Load form field guidance and examples"
+
+      plan:
+        - "Determine order of section completion"
+        - "Identify which sections can be fully vs. partially completed"
+        - "Plan for placeholders where information is missing"
+
+      act:
+        - "Generate content for each section"
+        - "Follow field guidance for each form element"
+        - "Use plain language throughout"
+        - "Include citations for all claims"
+        - "Add placeholders with notes for incomplete areas"
+
+    template: "ai_discovery_form.yaml"
+
+    section_generation_order:
+      1: "Basic Information (easiest, sets context)"
+      2: "Problem Definition (core narrative)"
+      3: "Approach (technical details)"
+      4: "Success Metrics (measurable outcomes)"
+      5: "Potential Benefits (quantified value)"
+      6: "Risk Assessment (structured risk analysis)"
+      7: "Equity Considerations (comprehensive equity review)"
+
+    generation_guidelines:
+      plain_language:
+        - "Write for non-technical stakeholders"
+        - "Explain jargon when used"
+        - "Use active voice"
+        - "Be specific and concrete"
+
+      evidence_based:
+        - "Cite sources for all quantitative claims"
+        - "Reference research for best practices"
+        - "Link to vendor documentation"
+        - "Show calculations for ROI estimates"
+
+      completeness:
+        - "Address all required fields"
+        - "Provide sufficient detail for decision-making"
+        - "Use examples to illustrate concepts"
+        - "Be thorough but concise"
+
+      placeholders:
+        - "Use clear placeholders: [TO BE PROVIDED BY PROGRAM OWNER]"
+        - "Explain why information is missing"
+        - "Suggest how to obtain missing information"
+        - "Estimate confidence in placeholders"
+
+    outputs:
+      completed_form:
+        section_1_basic_information:
+          - "Title"
+          - "Program Owner"
+          - "Executive Champion"
+          - "Department(s)"
+          - "AI Vendor or Internal Solution"
+          - "Vendor(s)"
+
+        section_2_problem_definition:
+          - "Background on the problem to be solved"
+          - "Goal"
+          - "AI versus other solutions"
+
+        section_3_approach:
+          - "Workflow Integration"
+          - "Technical Integration"
+          - "AI Solution Components"
+
+        section_4_success_metrics:
+          - "Metrics and key outcome measures"
+          - "Primary goal highlighted"
+
+        section_5_equity_considerations:
+          - "Known disparities"
+          - "Access barriers"
+          - "Benefit disparities"
+          - "Status quo comparison"
+          - "Mitigation plans"
+
+        section_6_risk_assessment:
+          - "Multiple risks identified"
+          - "Each with likelihood, severity, comparison, mitigation"
+
+        section_7_potential_benefits:
+          - "Patient care benefits (quantified)"
+          - "Operational benefits (quantified)"
+          - "Financial benefits (quantified)"
+          - "Assumptions documented"
+
+      completeness_report:
+        sections_complete: "7/7"
+        fields_populated: "count/total"
+        placeholders_used: "count and locations"
+        confidence_by_section: "high/medium/low per section"
+
+      citations_appendix:
+        - "All sources used"
+        - "URLs and access dates"
+        - "Credibility notes"
+
+    verification_criteria:
+      must_have:
+        - "all_sections_present: All 7 sections exist"
+        - "required_fields_populated: All required fields have content"
+        - "plain_language_used: Readable by non-technical audience"
+        - "citations_included: Sources cited for claims"
+
+      should_have:
+        - "minimal_placeholders: <10% of content is placeholder"
+        - "evidence_based_claims: Quantitative claims have sources"
+        - "calculations_shown: ROI and benefit estimates show work"
+
+    next_steps:
+      if_verification_passes:
+        - "Proceed to Step 6: Self-Verify"
+
+      if_gaps_significant:
+        - "List gaps clearly"
+        - "Recommend next steps to fill gaps"
+        - "Proceed to self-verification with caveats"
+
+    example:
+      section_2_problem_definition_excerpt: |
+        **Background on the problem to be solved:**
+
+        Geisinger cardiologists receive an average of 200+ In Basket messages
+        daily (internal survey, 2024), consuming 2-3 hours of clinical time.
+        Current workflow requires sequential review of all messages, as there
+        is no systematic way to identify urgent items without reading each one.
+
+        This high volume leads to three key problems:
+        1. Delayed response to urgent patient needs (avg 24-48 hour response
+           time for high-priority messages)
+        2. After-hours work (60% of cardiologists report evening inbox time)
+        3. Clinician burnout and job dissatisfaction
+
+        Root cause: Message volume has increased 40% over 3 years due to
+        patient portal adoption and team-based care messaging, but triage
+        methods have not evolved.
+
+        Previous solutions tried:
+        - Message classification rules (20% adoption due to manual tagging required)
+        - Dedicated inbox support staff (cost-prohibitive to scale)
+
+        [Citations: Internal workforce survey Q1 2024, Epic usage analytics 2021-2024]
+
+  # --------------------------------------------------------------------------
+  # Step 6: Self-Verify
+  # --------------------------------------------------------------------------
+  - step_number: 6
+    step_id: "self_verify"
+    name: "Self-Verify Form Quality"
+    objective: |
+      Systematically verify the drafted AI Discovery Form against quality
+      standards before presenting to user for approval.
+
+    agent_actions:
+      gather:
+        - "Load completed draft form"
+        - "Load quality standards from ai-discovery-form.yaml blueprint"
+        - "Load verification checklist"
+
+      plan:
+        - "Run through each quality dimension"
+        - "Check each section against requirements"
+        - "Assess overall confidence and completeness"
+
+      act:
+        - "Execute verification checks"
+        - "Document findings for each check"
+        - "Calculate overall quality score"
+        - "Generate improvement recommendations"
+
+    verification_dimensions:
+      completeness:
+        checks:
+          - "All 7 sections present and populated"
+          - "All required fields have content (not placeholders)"
+          - "Supporting data provided where requested"
+          - "Calculations shown for quantitative claims"
+
+        scoring:
+          - "Count fields: required_populated / total_required"
+          - "Pass threshold: >90% fields complete"
+
+      clarity:
+        checks:
+          - "Plain language used throughout"
+          - "Technical jargon explained or avoided"
+          - "Specific examples provided"
+          - "Clear cause-and-effect relationships"
+
+        scoring:
+          - "Subjective assessment: high/medium/low"
+          - "Use readability heuristics (sentence length, word complexity)"
+
+      evidence_based:
+        checks:
+          - "Baseline metrics cited with sources"
+          - "Literature references for known disparities"
+          - "Calculations shown for benefit estimates"
+          - "Assumptions clearly stated"
+
+        scoring:
+          - "Count claims: claims_with_citations / total_quantitative_claims"
+          - "Pass threshold: >80% claims cited"
+
+      actionable:
+        checks:
+          - "Workflow integration specific enough to assess feasibility"
+          - "Risks specific enough to evaluate and mitigate"
+          - "Benefits quantified enough to justify investment"
+          - "Success metrics specific enough to track"
+
+        scoring:
+          - "Subjective assessment per section: actionable / needs_detail"
+          - "Pass threshold: 6/7 sections actionable"
+
+      policy_compliance:
+        checks:
+          - "Equity considerations addressed"
+          - "Risk assessment comprehensive"
+          - "Human-in-the-loop plan mentioned"
+          - "Monitoring approach described"
+
+        scoring:
+          - "Checklist: policy_requirement_met / total_policy_requirements"
+          - "Pass threshold: 100% of policy requirements addressed"
+
+    outputs:
+      verification_report:
+        overall_quality_score: "0.0 to 1.0"
+
+        dimension_scores:
+          completeness: "score and pass/fail"
+          clarity: "score and pass/fail"
+          evidence_based: "score and pass/fail"
+          actionable: "score and pass/fail"
+          policy_compliance: "score and pass/fail"
+
+        issues_found:
+          critical:
+            - "List of critical gaps or errors"
+            - "Must be fixed before presenting to user"
+
+          moderate:
+            - "List of moderate issues"
+            - "Should be fixed but not blockers"
+
+          minor:
+            - "List of minor improvements"
+            - "Nice to have"
+
+        recommendations:
+          for_agent:
+            - "Specific improvements agent can make"
+            - "Additional research to conduct"
+
+          for_human:
+            - "Information gaps requiring expert input"
+            - "Decisions requiring human judgment"
+            - "Validation needed from stakeholders"
+
+        confidence_final: "0.0 to 1.0 overall confidence"
+
+    decision_logic:
+      if_quality_score_high: # >0.85
+        action: "Present draft to user for approval"
+        message: |
+          "I've completed a comprehensive AI Discovery Form for {program_title}.
+           Quality score: {score}/1.0. The form is ready for your review."
+
+      if_quality_score_medium: # 0.70-0.85
+        action: "Present with caveats"
+        message: |
+          "I've drafted an AI Discovery Form for {program_title}.
+           Quality score: {score}/1.0. Some sections need your input: {gaps}.
+           Would you like to review and provide additional information?"
+
+      if_quality_score_low: # <0.70
+        action: "Iterate or escalate"
+        message: |
+          "I've made progress on the AI Discovery Form for {program_title},
+           but several critical gaps remain: {critical_issues}.
+           I recommend: {next_steps}. Should I continue research or would
+           you prefer to provide this information directly?"
+
+    next_steps:
+      if_verification_passes:
+        - "Present form to user (HITL Tier 3 approval)"
+        - "Await feedback"
+        - "Iterate based on user input"
+
+      if_verification_identifies_issues:
+        - "Fix critical issues immediately"
+        - "Re-run verification"
+        - "If still failing, present with clear caveats"
+
+      after_user_feedback:
+        - "Incorporate requested changes"
+        - "Re-verify"
+        - "Submit final version or iterate further"
+
+    example_verification_output: |
+      **Verification Report: Epic In Basket AI Discovery Form**
+
+      Overall Quality Score: 0.82 / 1.0
+
+      ✅ Completeness: 0.95 (PASS) - 27/28 required fields complete
+      ⚠️  Clarity: 0.80 (PASS) - Some technical jargon in approach section
+      ✅ Evidence-Based: 0.85 (PASS) - Most claims cited, some ROI estimates need sources
+      ✅ Actionable: 0.90 (PASS) - Workflow and risks well-detailed
+      ✅ Policy Compliance: 1.00 (PASS) - All governance requirements met
+
+      Issues Found:
+      - MODERATE: Technical integration section uses EHR jargon without explanation
+      - MODERATE: Financial benefits calculation needs citation for cost-per-message assumption
+      - MINOR: Risk mitigation for "alert fatigue" could be more specific
+
+      Recommendations:
+      For Human Review:
+      - Validate workflow integration details with Cardiology clinical lead
+      - Confirm financial assumptions with Finance
+      - Review equity mitigation plans with DEI committee
+
+      Status: READY FOR REVIEW (with minor improvements recommended)
+
+# ============================================================================
+# Workflow Iteration and Adaptation
+# ============================================================================
+
+iteration_strategy:
+  when_to_iterate:
+    - "Self-verification identifies critical gaps"
+    - "User feedback requires significant changes"
+    - "New information becomes available"
+    - "Confidence score is below threshold"
+
+  how_to_adapt:
+    for_missing_information:
+      - "Conduct additional targeted research (Steps 2-3)"
+      - "Ask user specific clarifying questions"
+      - "Search for analogous examples"
+      - "Make explicit assumptions and document"
+
+    for_clarity_issues:
+      - "Simplify language"
+      - "Add explanatory examples"
+      - "Define technical terms"
+      - "Break complex ideas into steps"
+
+    for_evidence_gaps:
+      - "Search for additional sources"
+      - "Look for industry benchmarks"
+      - "Find comparable case studies"
+      - "Acknowledge uncertainty explicitly"
+
+    for_user_feedback:
+      - "Incorporate feedback precisely"
+      - "Re-verify affected sections"
+      - "Maintain consistency across form"
+      - "Track changes for audit"
+
+  max_iterations: 3
+  reasoning: |
+    After 3 iterations, diminishing returns set in. Either:
+    - Quality is sufficient (proceed to approval)
+    - Gaps require expert input (escalate to human)
+    - Scope needs clarification (discuss with user)
+
+# ============================================================================
+# Success Metrics for Workflow
+# ============================================================================
+
+workflow_success_metrics:
+  quality_metrics:
+    - "Discovery forms achieve >0.85 quality score"
+    - "Self-verification catches >90% of issues before human review"
+    - "< 10% of forms require major revision after user review"
+
+  efficiency_metrics:
+    - "Workflow completes in <4 hours (agent time)"
+    - "< 2 iterations needed on average"
+    - "Research phase finds relevant sources >80% of the time"
+
+  adoption_metrics:
+    - "Users approve forms without modification >60% of the time"
+    - "Users provide feedback that is actionable >90% of the time"
+    - "Forms meet stakeholder needs (measured in reviews)"
+
+# ============================================================================
+# Agent Instructions
+# ============================================================================
+
+agent_instructions:
+  when_to_use_workflow:
+    - "User requests AI Discovery Form generation"
+    - "User provides ServiceNow ticket for discovery"
+    - "User has approved intake brief and needs next step"
+    - "User asks for help documenting AI program"
+
+  how_to_execute:
+    start:
+      - "Acknowledge task and explain workflow"
+      - "Set expectations (2-4 hours, may need user input)"
+      - "Begin Step 1: Extract Basics"
+
+    during_execution:
+      - "Show progress through steps"
+      - "Surface interesting findings as you go"
+      - "Ask clarifying questions when stuck"
+      - "Don't wait until end to engage user"
+
+    after_completion:
+      - "Present summary of findings"
+      - "Share verification report"
+      - "Highlight areas needing user input"
+      - "Request approval or feedback"
+
+  communication_style:
+    - "Be transparent about confidence and gaps"
+    - "Cite sources for credibility"
+    - "Explain reasoning for recommendations"
+    - "Make it easy to provide feedback"
+
+  error_handling:
+    if_research_fails:
+      - "Try alternative search strategies"
+      - "Look for analogous use cases"
+      - "Ask user for pointers to resources"
+      - "Document what couldn't be found"
+
+    if_synthesis_unclear:
+      - "Break problem into smaller pieces"
+      - "Ask user to clarify specific points"
+      - "Make explicit assumptions"
+      - "Flag for expert review"
+
+    if_verification_repeatedly_fails:
+      - "Identify root cause of failures"
+      - "Escalate to user with clear explanation"
+      - "Suggest alternative approach"
+      - "Don't spin indefinitely"
+
+# ============================================================================
+# Integration with Other Blueprints
+# ============================================================================
+
+related_blueprints:
+  ai_discovery_form:
+    relationship: "This workflow generates the Discovery Form"
+    integration: "Uses form template and quality standards from blueprint"
+
+  ai_product_manager_strategy:
+    relationship: "Workflow implements Discovery phase of lifecycle"
+    integration: "Follows rapid iteration and evidence-based principles"
+
+  meta_blueprint:
+    relationship: "Workflow ensures governance compliance"
+    integration: "Self-verification checks policy requirements"
+
+# ============================================================================
+# Example: End-to-End Workflow Execution
+# ============================================================================
+
+example_execution:
+  scenario: "Generate Discovery Form for Epic In Basket AI"
+
+  step_1_extract:
+    input: "SNOW ticket INC0012345"
+    output:
+      vendor: "Epic Systems"
+      use_case: "Physician Inbox Message Prioritization"
+      department: "Cardiology"
+    duration: "5 minutes"
+
+  step_2_research_vendor:
+    queries: ["Epic In Basket AI capabilities", "Epic NLP healthcare"]
+    sources_found: 8
+    key_findings: "Native Epic integration, 50+ deployments, NLP-based"
+    duration: "30 minutes"
+
+  step_3_research_use_case:
+    queries: ["physician inbox overload", "message triage AI"]
+    sources_found: 12
+    key_findings: "30-40% time savings typical, equity concerns with NLP"
+    duration: "45 minutes"
+
+  step_4_synthesize:
+    confidence: 0.78
+    gaps: "Need Cardiology-specific workflow details"
+    duration: "20 minutes"
+
+  step_5_draft:
+    sections_complete: "7/7"
+    placeholders: 3
+    word_count: 4200
+    duration: "60 minutes"
+
+  step_6_verify:
+    quality_score: 0.82
+    issues: "2 moderate, 3 minor"
+    recommendation: "Ready for review with noted gaps"
+    duration: "15 minutes"
+
+  total_duration: "2 hours 55 minutes"
+  outcome: "PRESENTED TO USER FOR REVIEW"

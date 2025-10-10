@@ -781,6 +781,186 @@ All AI programs must address:
 
 ---
 
+## 🔄 Discovery Workflow
+
+The agent follows a structured 6-step workflow to generate high-quality AI Discovery Forms from ServiceNow tickets or user input. This workflow implements the Gather → Plan → Act → Verify → Iterate pattern.
+
+### Workflow Overview
+
+**Objective**: Generate a complete, evidence-based AI Discovery Form that meets governance requirements
+
+**Inputs**: ServiceNow ticket, user description, or existing intake brief
+
+**Outputs**: Completed 7-section Discovery Form with citations, gaps identified, confidence assessment
+
+**Typical Duration**: 2-4 hours (agent time)
+
+### Six Steps
+
+#### Step 1: Extract Basics (5-10 min)
+**Objective**: Extract fundamental information from source
+
+**Actions**:
+- Retrieve ServiceNow ticket or parse user input
+- Extract vendor, technology, use case, department, stakeholders
+- Normalize and categorize information
+
+**Outputs**: Vendor name, technology type, use case category, problem statement draft
+
+**Verification**: Vendor identified, use case clear, problem articulated
+
+#### Step 2: Research Vendor (30-45 min)
+**Objective**: Gather comprehensive vendor information
+
+**Actions**:
+- Search vendor capabilities, healthcare experience, case studies
+- Research integration requirements and pricing
+- Document certifications and compliance
+
+**Search Queries**:
+- "{vendor} healthcare AI capabilities"
+- "{vendor} {technology} implementation guide"
+- "{vendor} integration requirements"
+- "{vendor} case studies healthcare"
+
+**Outputs**: Vendor profile (capabilities, experience, integration, pricing), citations
+
+**Verification**: Capabilities documented, healthcare experience verified, integration requirements known
+
+#### Step 3: Research Use Case (45-60 min)
+**Objective**: Understand clinical/operational problem deeply
+
+**Actions**:
+- Search problem domain literature
+- Find best practices and evidence
+- Identify metrics and benchmarks
+- Research equity considerations and risks
+
+**Search Queries**:
+- "{use_case} in healthcare challenges"
+- "{use_case} AI solutions best practices"
+- "{use_case} ROI metrics healthcare"
+- "{use_case} health disparities"
+- "{use_case} AI bias concerns"
+
+**Outputs**: Problem context, solution landscape, success metrics, equity considerations, risks, citations
+
+**Verification**: Problem understood, evidence found, metrics identified, equity research complete
+
+#### Step 4: Synthesize Context (15-30 min)
+**Objective**: Combine all research into coherent understanding
+
+**Actions**:
+- Map findings to form sections
+- Reconcile conflicting information
+- Generate initial content
+- Assess confidence by section
+- Identify gaps and assumptions
+
+**Outputs**: Comprehensive synthesis, confidence assessment, gaps identified
+
+**Verification**: Synthesis complete, form sections mapped, contradictions resolved
+
+#### Step 5: Draft Form (45-75 min)
+**Objective**: Populate all 7 sections with evidence-based content
+
+**Actions**:
+- Generate content for each section using synthesis
+- Follow plain language guidelines
+- Include citations for all claims
+- Show calculations for estimates
+- Use placeholders for missing information
+
+**Section Order**:
+1. Basic Information
+2. Problem Definition
+3. Approach
+4. Success Metrics
+5. Potential Benefits
+6. Risk Assessment
+7. Equity Considerations
+
+**Outputs**: Completed form (7 sections), completeness report, citations appendix
+
+**Verification**: All sections present, required fields populated, plain language used, citations included
+
+#### Step 6: Self-Verify (10-20 min)
+**Objective**: Verify form quality against standards
+
+**Actions**:
+- Check completeness (>90% fields complete)
+- Check clarity (plain language, examples)
+- Check evidence-based (>80% claims cited)
+- Check actionable (sufficient detail)
+- Check policy compliance (100% requirements met)
+
+**Quality Dimensions**:
+- **Completeness**: All required fields populated with content
+- **Clarity**: Plain language, specific examples, clear relationships
+- **Evidence-Based**: Claims cited, calculations shown, assumptions stated
+- **Actionable**: Sufficient detail for stakeholder decision-making
+- **Policy Compliance**: Equity, risk, HITL, monitoring addressed
+
+**Outputs**: Verification report with quality score (0.0-1.0), issues found (critical/moderate/minor), recommendations
+
+**Decision Logic**:
+- Quality >0.85: Present to user for approval
+- Quality 0.70-0.85: Present with caveats and gaps
+- Quality <0.70: Iterate or escalate
+
+### Iteration Strategy
+
+**When to Iterate**:
+- Self-verification identifies critical gaps
+- User feedback requires changes
+- Confidence below threshold
+- New information available
+
+**How to Adapt**:
+- Missing information → Additional research or user questions
+- Clarity issues → Simplify language, add examples
+- Evidence gaps → Search for sources, acknowledge uncertainty
+- User feedback → Incorporate precisely, re-verify
+
+**Max Iterations**: 3 (then escalate or accept gaps)
+
+### Success Metrics
+
+**Quality**:
+- Discovery forms achieve >0.85 quality score
+- Self-verification catches >90% of issues
+- <10% require major revision after user review
+
+**Efficiency**:
+- Workflow completes in <4 hours
+- <2 iterations needed on average
+- Relevant sources found >80% of the time
+
+**Adoption**:
+- Users approve without modification >60% of the time
+- Stakeholder needs met in reviews
+
+### Example Execution
+
+**Scenario**: Epic In Basket AI for Cardiology
+
+- **Step 1** (5 min): Extract vendor (Epic), use case (inbox prioritization), department (Cardiology)
+- **Step 2** (30 min): Research Epic capabilities - found 8 sources, identified NLP technology, 50+ deployments
+- **Step 3** (45 min): Research inbox overload problem - found 12 sources, 30-40% time savings typical, equity concerns noted
+- **Step 4** (20 min): Synthesize - confidence 0.78, gaps in Cardiology-specific workflow
+- **Step 5** (60 min): Draft form - 7/7 sections complete, 3 placeholders, 4200 words
+- **Step 6** (15 min): Verify - quality score 0.82, 2 moderate issues, ready for review
+
+**Total**: 2 hours 55 minutes, **Result**: PRESENTED TO USER FOR REVIEW
+
+### Related Documents
+
+- **Blueprint**: `docs/blueprints/discovery-workflow.yaml` - Complete workflow specification
+- **Form Template**: `docs/blueprints/ai-discovery-form.yaml` - Target document structure
+- **Strategy**: `docs/blueprints/ai-product-manager-strategy.yaml` - Discovery phase context
+
+---
+
 ## 🔧 Configuration
 
 ### Environment Variables
