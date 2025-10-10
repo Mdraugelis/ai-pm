@@ -313,7 +313,7 @@ def initialize_default_tools() -> ToolRegistry:
     """
     Initialize registry with default tools
 
-    Registers all built-in tools (ServiceNow, Azure DevOps, etc.)
+    Registers all built-in tools (Azure DevOps, etc.)
 
     Returns:
         Configured ToolRegistry
@@ -323,20 +323,6 @@ def initialize_default_tools() -> ToolRegistry:
         >>> tool = registry.get_tool("azure_devops_client")
     """
     registry = get_global_registry()
-
-    # Register Web Search tool
-    try:
-        from src.tools.web_search_tool import WebSearchTool
-
-        web_search_tool = WebSearchTool()
-        registry.register_tool(web_search_tool)
-        logger.info("Web Search tool registered")
-    except ImportError as e:
-        logger.warning("Failed to register Web Search tool", error=str(e))
-    except Exception as e:
-        logger.error(
-            "Error registering Web Search tool", error=str(e), exc_info=True
-        )
 
     # Register Azure DevOps tool
     try:

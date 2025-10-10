@@ -30,8 +30,6 @@ import structlog
 
 from src.agent.orchestrator import AgentOrchestrator, Task, AgentResponse
 from src.agent.llm_interface import LLMInterface
-from src.tools.web_search_tool import WebSearchTool, format_search_results_for_llm
-from src.tools.base import ExecutionContext
 
 logger = structlog.get_logger(__name__)
 
@@ -150,15 +148,6 @@ class ProductManagerAgent:
         # Load workflows and templates
         self.discovery_workflow = self._load_workflow("discovery")
         self.discovery_template = self._load_template("ai_discovery_form")
-
-        # Initialize web search tool
-        web_search_config = config.get("tools", {}).get("web_search", {})
-        self.web_search = WebSearchTool(
-            api_key=web_search_config.get("api_key"),
-            max_results=web_search_config.get("max_results", 10),
-            timeout_seconds=web_search_config.get("timeout_seconds", 30),
-            cache_ttl_seconds=web_search_config.get("cache_ttl_seconds", 3600),
-        )
 
         # Observability
         self.traces: Dict[str, Dict[str, Any]] = {}
@@ -395,8 +384,7 @@ Return ONLY valid JSON, no other text.
 
         Step 2 of Discovery Workflow: Research Vendor (30-45 min)
 
-        Uses web search to find current information about the vendor,
-        then LLM to synthesize findings into structured output.
+        Uses LLM knowledge to provide vendor information and analysis.
 
         Args:
             vendor_name: Name of vendor to research
@@ -413,58 +401,23 @@ Return ONLY valid JSON, no other text.
         if not vendor_name:
             return {"error": "No vendor specified", "sources": []}
 
-        # Execute web searches for vendor information
-        search_queries = [
-            f"{vendor_name} healthcare AI capabilities",
-            f"{vendor_name} AI products features",
-            f"{vendor_name} healthcare implementations case studies",
-        ]
-
-        all_search_results = []
-        all_sources = []
-
-        for query in search_queries:
-            # Execute search
-            context = ExecutionContext(session_id="vendor_research")
-            search_result = await self.web_search.execute(
-                {"query": query, "count": 5},
-                context
-            )
-
-            if search_result.is_success():
-                results = search_result.data.get("results", [])
-                all_search_results.extend(results)
-                all_sources.extend(search_result.citations)
-
-        logger.info(
-            "Web search completed",
-            total_results=len(all_search_results),
-            sources=len(all_sources)
-        )
-
-        # Format search results for LLM
-        search_context = format_search_results_for_llm(all_search_results, max_results=10)
-
-        # Build synthesis prompt with web search results
-        prompt = f"""Analyze this vendor based on web search results:
+        # Build research prompt using LLM knowledge
+        prompt = f"""Provide comprehensive analysis of this AI vendor:
 
 VENDOR: {vendor_name}
 
-WEB SEARCH RESULTS:
-{search_context}
-
-Synthesize the information and provide analysis covering:
+Provide detailed analysis covering:
 1. Company background and AI focus areas
 2. Key AI products and capabilities
 3. Healthcare AI experience (if applicable)
 4. Integration capabilities
 5. Known risks or concerns
 
-Return as JSON with fields: company_background, ai_products, healthcare_experience, integration_capabilities, risks, sources
-Include actual URLs from the search results in sources array.
+Return as JSON with fields: company_background, ai_products, healthcare_experience, integration_capabilities, risks
+Be specific and detailed based on your knowledge of this vendor.
 """
 
-        # Call LLM to synthesize web results
+        # Call LLM
         response = await self.llm.ask_question(prompt)
 
         # Parse response
@@ -473,21 +426,20 @@ Include actual URLs from the search results in sources array.
             json_end = response.rfind("}") + 1
             if json_start != -1 and json_end > json_start:
                 result = json.loads(response[json_start:json_end])
-                # Ensure sources are included
-                if "sources" not in result or not result["sources"]:
-                    result["sources"] = list(set(all_sources[:5]))  # Top 5 unique sources
+                # Add note about knowledge-based research
+                result["sources"] = ["LLM knowledge base"]
                 return result
             else:
                 return {
                     "vendor_name": vendor_name,
                     "summary": response,
-                    "sources": list(set(all_sources[:5])),
+                    "sources": ["LLM knowledge base"],
                 }
         except json.JSONDecodeError:
             return {
                 "vendor_name": vendor_name,
                 "summary": response,
-                "sources": list(set(all_sources[:5])),
+                "sources": ["LLM knowledge base"],
             }
 
     async def research_use_case(
@@ -498,8 +450,7 @@ Include actual URLs from the search results in sources array.
 
         Step 3 of Discovery Workflow: Research Use Case (45-60 min)
 
-        Uses web search to find evidence, best practices, and case studies,
-        then LLM to synthesize findings into structured output.
+        Uses LLM knowledge to analyze the use case and provide insights.
 
         Args:
             use_case: Description of use case
@@ -518,61 +469,24 @@ Include actual URLs from the search results in sources array.
         if not use_case:
             return {"error": "No use case specified", "sources": []}
 
-        # Execute web searches for use case information
-        dept_context = f"{department} " if department else "healthcare "
-        search_queries = [
-            f"{use_case} in {dept_context}challenges solutions",
-            f"{use_case} AI healthcare best practices",
-            f"{use_case} ROI metrics {dept_context}outcomes",
-            f"{use_case} AI bias equity considerations",
-        ]
-
-        all_search_results = []
-        all_sources = []
-
-        for query in search_queries:
-            # Execute search
-            context = ExecutionContext(session_id="use_case_research")
-            search_result = await self.web_search.execute(
-                {"query": query, "count": 5},
-                context
-            )
-
-            if search_result.is_success():
-                results = search_result.data.get("results", [])
-                all_search_results.extend(results)
-                all_sources.extend(search_result.citations)
-
-        logger.info(
-            "Web search completed",
-            total_results=len(all_search_results),
-            sources=len(all_sources)
-        )
-
-        # Format search results for LLM
-        search_context = format_search_results_for_llm(all_search_results, max_results=15)
-
-        # Build synthesis prompt with web search results
-        prompt = f"""Analyze this healthcare use case based on web search results:
+        # Build research prompt using LLM knowledge
+        prompt = f"""Analyze this healthcare use case:
 
 USE CASE: {use_case}
 DEPARTMENT: {department or "Not specified"}
 
-WEB SEARCH RESULTS:
-{search_context}
-
-Synthesize the information and provide analysis covering:
+Provide comprehensive analysis covering:
 1. Current workflow and pain points
 2. How AI could help
 3. Similar implementations (best practices)
 4. Potential risks and challenges
 5. Success metrics to consider
 
-Return as JSON with fields: workflow_analysis, ai_benefits, similar_implementations, risks, success_metrics, sources
-Include actual URLs from the search results in sources array.
+Return as JSON with fields: workflow_analysis, ai_benefits, similar_implementations, risks, success_metrics
+Be specific and provide detailed analysis based on your knowledge of healthcare AI applications.
 """
 
-        # Call LLM to synthesize web results
+        # Call LLM
         response = await self.llm.ask_question(prompt)
 
         # Parse response
@@ -581,23 +495,22 @@ Include actual URLs from the search results in sources array.
             json_end = response.rfind("}") + 1
             if json_start != -1 and json_end > json_start:
                 result = json.loads(response[json_start:json_end])
-                # Ensure sources are included
-                if "sources" not in result or not result["sources"]:
-                    result["sources"] = list(set(all_sources[:5]))  # Top 5 unique sources
+                # Add note about knowledge-based research
+                result["sources"] = ["LLM knowledge base"]
                 return result
             else:
                 return {
                     "use_case": use_case,
                     "department": department,
                     "analysis": response,
-                    "sources": list(set(all_sources[:5])),
+                    "sources": ["LLM knowledge base"],
                 }
         except json.JSONDecodeError:
             return {
                 "use_case": use_case,
                 "department": department,
                 "analysis": response,
-                "sources": list(set(all_sources[:5])),
+                "sources": ["LLM knowledge base"],
             }
 
     async def synthesize_knowledge(
