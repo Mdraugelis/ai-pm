@@ -650,6 +650,137 @@ Discovery Forms are reviewed by:
 
 ---
 
+## 🎓 AI Product Manager Strategy
+
+The agent is equipped with comprehensive strategic framework for AI Product Management, based on Andrew Ng's practical heuristics for high-impact, rapid-iteration AI development. This framework guides all AI program activities from discovery through deployment and scale.
+
+### Mission
+
+**Deliver AI solutions that measurably improve patient outcomes, staff efficiency, and system performance** by embedding intelligent automation and predictive insights directly into operational and clinical workflows.
+
+### Core Mindsets
+
+Seven fundamental principles guide all AI Product Manager activities:
+
+1. **Prototype rapidly → learn through failure**
+   - Build fast, fail fast, learn fast
+   - Spend days, not weeks on first prototype
+   - Treat every prototype as disposable
+
+2. **Anchor on a single measurable metric → guide all iteration**
+   - Define success upfront with one primary metric
+   - Let data, not opinions, drive decisions
+   - Measure metric in every iteration
+
+3. **Analyze errors relentlessly → data, not intuition, drives improvements**
+   - Every error is a learning opportunity
+   - Classify, count, prioritize, and fix systematically
+   - Validate that fixes work as expected
+
+4. **Keep humans in control → safety, accountability, and adoption hinge on it**
+   - AI assists, humans decide
+   - Design for easy override and clear accountability
+   - Track override rates as quality signal
+
+5. **Design for change → data shifts, workflows evolve; AI must too**
+   - Build for continuous improvement, not one-time deployment
+   - Expect drift, plan for retraining
+   - Version all models and data
+
+6. **Empower decision speed → PMs are the bottleneck; reduce drag**
+   - Fast decisions beat perfect decisions
+   - Reduce approval overhead, enable experimentation
+   - Trust teams within guardrails
+
+7. **Celebrate learning → every iteration strengthens institutional capability**
+   - Learning compounds
+   - Share failures, reward pivots
+   - Make it safe to experiment
+
+### AI Product Lifecycle
+
+The framework defines four phases aligned with Andrew Ng's heuristics:
+
+#### 1. Discovery & Ideation (1-4 weeks)
+**Objective**: Identify high-value, feasible problems and generate validated hypotheses quickly
+
+**Key Practices**:
+- **Rapid Throwaway Prototype**: Build minimal model in days to expose error classes
+- **Primary Metric Early**: Choose single "north star" metric before building
+- **Structured Error Analysis**: Classify errors, estimate uplift from fixes
+- **Human-Level Benchmarking**: Confirm humans can perform task reliably
+- **3-Filter Assessment**: Feasibility × ROI × Defensibility
+- **Domain-Aligned Data Splits**: Ensure dev/test sets mirror operational reality
+
+**Deliverables**: Problem statement, primary metric, prototype with error analysis, go/no-go recommendation
+
+#### 2. Pilot / Validation (1-3 months)
+**Objective**: Test in real-world settings with tight feedback loops
+
+**Key Practices**:
+- **Short Realistic Pilots**: Stress boundary cases early; collect telemetry and human feedback
+- **Continuous Error Decomposition**: Treat each pilot as diagnostic cycle
+- **Metric Adjustment**: Update metrics if they misalign with goals
+- **Explicit Human-Machine Handoff**: Define where humans review, override, reject
+- **Pilot Metric Guardrails**: Track accuracy, operational impact, safety, and equity
+
+**Deliverables**: Pilot results, error analysis, human feedback, equity analysis, deployment recommendation
+
+#### 3. Deployment / Scale (Ongoing)
+**Objective**: Institutionalize solution with observability and continuous improvement
+
+**Key Practices**:
+- **Built-in Retraining Cadence**: Architect for periodic model updates
+- **Drift Monitoring**: Alert on shifts in feature or label distributions
+- **Feedback Ingestion Loop**: Log every human override or AI failure
+- **Metric-Level Rollback Guards**: Automatic rollback if primary metric degrades
+- **Measure True Impact**: Track operational and clinical outcomes, not just accuracy
+
+**Deliverables**: Deployment plan, monitoring dashboard, retraining pipeline, quarterly reviews
+
+#### 4. Organizational Enablement (Ongoing)
+**Objective**: Build environment for PMs to iterate, learn, and deliver safely at speed
+
+**Key Practices**:
+- **Train PMs in Ng-Style Thinking**: Embed fast prototyping and error analysis habits
+- **Shorten Feedback Loops**: Compress time between prototype, decision, and pilot
+- **Empower Decision-Making**: Clear guardrails so PMs can pivot without delays
+- **Cross-Functional Error Reviews**: Convene after major misclassifications
+- **AI Thinking Reviews at Stage Gates**: Confirm principles before advancing
+- **Promote Fast Failure Culture**: Celebrate discovery and learning cycles
+
+### Roles and Responsibilities
+
+The framework defines clear responsibilities for six key roles:
+
+- **AI Product Manager**: Define vision, manage lifecycle, align technology with workflow needs, ensure measurable impact
+- **Clinical Lead**: Define problem, own rollout, select KPIs, ensure safety and adoption
+- **Data Scientist**: Develop and validate models, conduct error analysis, document per TRIPOD standards
+- **MLOps Engineer**: Build CI/CD pipelines, deploy and monitor models, ensure reproducibility
+- **Human Factors / UX**: Design intuitive interfaces that integrate naturally into practice
+- **Data Manager**: Ensure secure, compliant data handling and metadata governance
+
+### Governance & Metrics
+
+All AI programs must address:
+
+- **Human-in-the-Loop**: Required for all high-risk use cases
+- **Equity & Fairness Reviews**: Bias detection across demographic subgroups during pilot and scale
+- **Model Monitoring**: Automated alerts for performance drift and governance logs
+- **Primary KPI Categories**:
+  1. Operational Efficiency (time saved, throughput)
+  2. Clinical Quality (accuracy, safety events avoided)
+  3. Adoption & Satisfaction (active use rates, feedback)
+  4. ROI (financial or capacity impact)
+
+### Related Documents
+
+- **Blueprint**: `docs/blueprints/ai-product-manager-strategy.yaml` - Complete strategic framework
+- **Example**: Radiology Nodule Detection Assistant - Full lifecycle example in blueprint
+- **Visual Canvas**: ASCII lifecycle canvas for quick reference
+
+---
+
 ## 🔧 Configuration
 
 ### Environment Variables

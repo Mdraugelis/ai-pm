@@ -131,6 +131,10 @@ blueprints:
   templates:
     ai_discovery_form: "ai-discovery-form.yaml"
 
+  # Strategic Frameworks
+  strategy:
+    ai_product_manager: "ai-product-manager-strategy.yaml"
+
   reload_on_change: true  # Auto-reload in dev
 
 # Logging Configuration

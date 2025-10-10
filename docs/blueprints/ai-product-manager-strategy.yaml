@@ -1,0 +1,1209 @@
+# AI Product Manager Strategy Blueprint
+# Geisinger AI Product Manager Agent - Domain Knowledge
+# Version: 1.0
+
+name: "AI Product Manager Strategy"
+type: "strategic_framework"
+domain: "product_management"
+version: "1.0"
+criticality: "foundational"
+
+description: |
+  Strategic framework for AI Product Managers at Geisinger, embedding Andrew Ng's
+  practical heuristics for high-impact, rapid-iteration AI development.
+
+  This blueprint defines the mission, lifecycle phases, roles, governance, and
+  cultural mindsets that enable AI Product Managers to deliver measurable
+  improvements in patient outcomes, staff efficiency, and system performance.
+
+# ============================================================================
+# Mission
+# ============================================================================
+
+mission:
+  statement: |
+    Deliver AI solutions that **measurably improve patient outcomes, staff
+    efficiency, and system performance** by embedding intelligent automation
+    and predictive insights directly into operational and clinical workflows.
+
+  core_objectives:
+    - Measurable improvement in patient outcomes
+    - Enhanced staff efficiency and workflow optimization
+    - Demonstrable system performance gains
+    - Intelligent automation embedded in daily workflows
+    - Predictive insights that enable proactive care
+
+  success_criteria:
+    - Solutions deployed into production workflows
+    - Metrics show statistically significant improvement
+    - Clinical and operational staff actively adopt solutions
+    - Return on investment demonstrated
+    - Safety and equity maintained or improved
+
+# ============================================================================
+# I. Roles and Responsibilities
+# ============================================================================
+
+roles:
+  ai_product_manager:
+    title: "AI Product Manager"
+    primary_responsibilities:
+      - "Define product vision aligned with organizational strategy"
+      - "Manage full product lifecycle from discovery to scale"
+      - "Align technology capabilities with workflow needs"
+      - "Ensure measurable impact on key metrics"
+      - "Balance innovation with safety and governance"
+      - "Coordinate cross-functional teams"
+      - "Make data-driven prioritization decisions"
+
+    key_competencies:
+      - Product vision and strategy
+      - Agile/iterative development methodology
+      - Metrics-driven decision making
+      - Clinical/operational workflow understanding
+      - Stakeholder management
+      - Technical literacy (ML/AI fundamentals)
+      - Risk and compliance awareness
+
+    decision_authority:
+      - Feature prioritization within approved programs
+      - Pilot scope and timeline
+      - Iteration strategy based on metrics
+      - Resource allocation within budget
+      - Escalation for safety or compliance concerns
+
+    collaboration_model:
+      clinical_lead: "Partner on problem definition and KPI selection"
+      data_scientist: "Collaborate on feasibility and model strategy"
+      mlops_engineer: "Coordinate on deployment and monitoring"
+      ux_designer: "Align on workflow integration and usability"
+      governance: "Ensure compliance and risk management"
+
+  clinical_lead:
+    title: "Clinical Lead"
+    primary_responsibilities:
+      - "Define the operational or clinical problem"
+      - "Own rollout and adoption within clinical area"
+      - "Select key performance indicators (KPIs)"
+      - "Ensure patient safety throughout lifecycle"
+      - "Champion solution among clinical staff"
+      - "Provide clinical validation and feedback"
+
+    key_competencies:
+      - Deep clinical/operational domain expertise
+      - Quality improvement methodology
+      - Change management
+      - Clinical workflow design
+      - Patient safety principles
+      - Data interpretation
+
+  data_scientist:
+    title: "Data Scientist"
+    primary_responsibilities:
+      - "Develop and validate predictive/ML models"
+      - "Document algorithms per TRIPOD standards"
+      - "Collaborate with clinical teams for validation"
+      - "Conduct error analysis and model diagnostics"
+      - "Recommend model improvements based on data"
+      - "Ensure statistical rigor and reproducibility"
+
+    key_competencies:
+      - Machine learning and statistical modeling
+      - Healthcare data analysis
+      - Model validation and testing
+      - Error analysis and diagnostics
+      - TRIPOD reporting standards
+      - Clinical research methodology
+
+  mlops_engineer:
+    title: "MLOps Engineer"
+    primary_responsibilities:
+      - "Build CI/CD pipelines for model deployment"
+      - "Deploy models to production environments"
+      - "Monitor model performance and drift"
+      - "Ensure reproducibility and version control"
+      - "Maintain governance compliance in operations"
+      - "Implement automated retraining workflows"
+
+    key_competencies:
+      - DevOps and CI/CD best practices
+      - Model deployment and serving
+      - Monitoring and observability
+      - Infrastructure as code
+      - Healthcare IT systems integration
+      - Security and compliance
+
+  human_factors_ux:
+    title: "Human Factors / UX Designer"
+    primary_responsibilities:
+      - "Design intuitive interfaces and workflows"
+      - "Ensure AI integrates naturally into daily practice"
+      - "Conduct usability testing with end users"
+      - "Optimize for cognitive load and efficiency"
+      - "Address alert fatigue and decision support design"
+
+    key_competencies:
+      - Human-centered design
+      - Clinical workflow analysis
+      - Usability testing
+      - Information architecture
+      - Cognitive psychology
+      - Healthcare UI/UX patterns
+
+  data_manager:
+    title: "Data Manager"
+    primary_responsibilities:
+      - "Ensure secure, compliant data handling"
+      - "Align with Data Manager Policy requirements"
+      - "Maintain metadata governance and lineage"
+      - "Coordinate data access and permissions"
+      - "Track data quality and completeness"
+
+    key_competencies:
+      - Data governance frameworks
+      - HIPAA and privacy regulations
+      - Data quality management
+      - Metadata management
+      - Access control and security
+
+# ============================================================================
+# II. AI Product Lifecycle
+# ============================================================================
+
+lifecycle:
+  overview: |
+    Each phase is aligned with Andrew Ng's practical heuristics for high-impact,
+    rapid-iteration AI development. The lifecycle emphasizes fast learning,
+    metric-driven iteration, and error analysis.
+
+  # --------------------------------------------------------------------------
+  # Phase 1: Discovery & Ideation
+  # --------------------------------------------------------------------------
+  discovery_and_ideation:
+    phase_number: 1
+    objective: |
+      Identify high-value, feasible problems and generate validated hypotheses quickly.
+
+    duration: "1-4 weeks"
+
+    key_practices:
+      rapid_throwaway_prototype:
+        description: |
+          Build a minimal model or simulation within days to expose error classes
+          and failure modes. Use these insights to guide investment decisions.
+
+        guidance: |
+          - Spend days, not weeks, on first prototype
+          - Goal is learning, not production quality
+          - Focus on exposing what won't work
+          - Use prototype to estimate error rates and types
+          - Decide whether to proceed based on error analysis
+
+        outputs:
+          - Baseline model performance metrics
+          - Error classification taxonomy
+          - Feasibility assessment
+          - Estimated effort for viable solution
+
+      primary_metric_early:
+        description: |
+          Choose a single "north star" metric (or one primary + secondary) that
+          defines success (e.g., review time reduction, improved sensitivity).
+
+        guidance: |
+          - Define metric before building anything significant
+          - Ensure metric is measurable in operations
+          - Get clinical/operational stakeholder buy-in
+          - Align metric with patient outcomes or efficiency
+          - Consider one primary + 1-2 secondary metrics
+
+        examples:
+          - "Reduce radiology review time by 30%"
+          - "Improve sepsis detection sensitivity to 95%"
+          - "Decrease medication errors by 50%"
+          - "Increase patient throughput by 20%"
+
+      structured_error_analysis:
+        description: |
+          For each prototype, classify errors and estimate expected uplift from
+          fixes. Prioritize based on impact vs effort.
+
+        guidance: |
+          - Categorize every error by root cause
+          - Estimate how many errors each fix would prevent
+          - Calculate impact × feasibility scores
+          - Prioritize highest-leverage improvements
+          - Re-run analysis after each iteration
+
+        error_categories:
+          - "Data quality issues (missing, incorrect, outdated)"
+          - "Model limitations (complexity, features, architecture)"
+          - "Distribution mismatch (training vs. deployment)"
+          - "Edge cases and rare scenarios"
+          - "Labeling errors or ambiguity"
+
+      human_level_benchmarking:
+        description: |
+          Confirm that humans can perform the task reliably—this establishes
+          a realistic performance ceiling.
+
+        guidance: |
+          - Test whether clinicians/staff can do task consistently
+          - Measure inter-rater reliability
+          - If humans struggle, AI likely will too
+          - Use human performance as ceiling, not floor
+          - Consider whether AI needs to match or exceed humans
+
+      feasibility_roi_defensibility_filter:
+        description: |
+          Filter opportunities through three critical lenses before proceeding.
+
+        filters:
+          feasibility:
+            question: "Can we collect and train reliable data/models?"
+            criteria:
+              - "Sufficient training data available or obtainable"
+              - "Data quality meets minimum standards"
+              - "Labels available or can be generated"
+              - "Technical expertise available"
+              - "Infrastructure supports development"
+
+          roi:
+            question: "Will it move a key system metric or workflow KPI?"
+            criteria:
+              - "Addresses high-volume or high-impact problem"
+              - "Measurable improvement expected"
+              - "Financial or clinical value quantifiable"
+              - "Aligns with organizational priorities"
+              - "Benefits justify costs"
+
+          defensibility:
+            question: "Do we have unique data or workflow integration advantages?"
+            criteria:
+              - "Unique access to proprietary data"
+              - "Deep workflow integration possible"
+              - "Organizational capabilities hard to replicate"
+              - "Network effects or data flywheel potential"
+              - "Not easily commoditized"
+
+      domain_aligned_data_splits:
+        description: |
+          Ensure dev/test sets mirror operational reality—same patient mix,
+          imaging modalities, and workflow environment.
+
+        guidance: |
+          - Split data temporally (not randomly) when appropriate
+          - Match test set to deployment environment
+          - Include edge cases and rare scenarios
+          - Validate that test performance predicts real performance
+          - Update splits if deployment domain changes
+
+    deliverables:
+      - Problem statement with quantified scope
+      - Primary metric definition
+      - Throwaway prototype with error analysis
+      - Feasibility × ROI × Defensibility assessment
+      - Go/no-go recommendation with rationale
+
+    approval_gates:
+      - Clinical Lead approves problem definition
+      - Product Manager approves metric and scope
+      - Technical Lead approves feasibility
+      - Finance approves ROI projections
+      - Executive Sponsor approves program continuation
+
+  # --------------------------------------------------------------------------
+  # Phase 2: Pilot / Validation
+  # --------------------------------------------------------------------------
+  pilot_validation:
+    phase_number: 2
+    objective: |
+      Test in real-world settings with tight feedback loops to refine
+      performance and usability.
+
+    duration: "1-3 months"
+
+    key_practices:
+      short_realistic_pilots:
+        description: |
+          Stress boundary cases early; collect both telemetry and human feedback.
+
+        guidance: |
+          - Start small (single unit, limited users)
+          - Run for days/weeks, not months
+          - Deliberately test edge cases
+          - Collect quantitative metrics AND qualitative feedback
+          - Plan multiple short pilots over one long pilot
+
+        pilot_design:
+          - "Silent mode (AI runs but doesn't affect workflow)"
+          - "Shadow mode (AI and humans work in parallel)"
+          - "Assistant mode (AI suggests, human decides)"
+          - "Autonomous mode (AI acts, human reviews)"
+
+      continuous_error_decomposition:
+        description: |
+          Treat each pilot iteration as a diagnostic cycle—analyze error causes,
+          generate hypotheses, and re-prioritize model updates.
+
+        guidance: |
+          - Review errors daily or weekly (not at end of pilot)
+          - Categorize errors by root cause
+          - Generate hypotheses for each error type
+          - Test highest-impact hypotheses first
+          - Track whether fixes work as expected
+
+        iteration_cycle:
+          - "Collect errors from pilot"
+          - "Classify and count by category"
+          - "Hypothesize root causes"
+          - "Estimate impact of potential fixes"
+          - "Implement highest-leverage fix"
+          - "Deploy and measure improvement"
+          - "Repeat"
+
+      metric_and_dataset_adjustment:
+        description: |
+          Update metrics or re-split datasets if they misrepresent operational
+          goals or inputs.
+
+        guidance: |
+          - Monitor whether metric aligns with real outcomes
+          - Adjust if gaming or unintended consequences emerge
+          - Update test sets if deployment shifts
+          - Re-baseline metrics if workflow changes
+          - Document all changes and rationale
+
+      explicit_human_machine_handoff_rules:
+        description: |
+          Define where humans must review, override, or reject AI output.
+          Keep accountability clear.
+
+        guidance: |
+          - Specify which outputs require human confirmation
+          - Define confidence thresholds for escalation
+          - Clarify who is accountable for decisions
+          - Design for easy override (no friction)
+          - Log all human interventions for analysis
+
+        handoff_patterns:
+          - "AI proposes, human approves (all decisions)"
+          - "AI acts autonomously within confidence bounds, escalates otherwise"
+          - "AI handles routine cases, human handles complex cases"
+          - "AI augments human decision (shows predictions, human decides)"
+
+      pilot_metric_guardrails:
+        description: |
+          Track more than accuracy—monitor safety, equity, and operational metrics.
+
+        metrics_to_track:
+          model_performance:
+            - "Accuracy, sensitivity, specificity"
+            - "Positive predictive value, negative predictive value"
+            - "AUC-ROC, AUC-PR"
+            - "Calibration and confidence distribution"
+
+          operational_impact:
+            - "Time to decision"
+            - "Workflow efficiency (steps, clicks, time)"
+            - "Alert burden and override rates"
+            - "User satisfaction scores"
+
+          safety_and_equity:
+            - "False positives vs. false negatives by subgroup"
+            - "Performance by demographic group (age, race, sex)"
+            - "Failure modes requiring human fallback"
+            - "Adverse events or near-misses"
+
+    deliverables:
+      - Pilot results report with metrics
+      - Error analysis with root causes
+      - Human feedback synthesis
+      - Equity and safety analysis
+      - Go/no-go for deployment recommendation
+
+    approval_gates:
+      - Clinical Lead approves safety and clinical performance
+      - Product Manager approves operational metrics
+      - Equity Committee approves fairness analysis
+      - Governance reviews compliance
+      - Executive Sponsor approves deployment
+
+  # --------------------------------------------------------------------------
+  # Phase 3: Deployment / Scale
+  # --------------------------------------------------------------------------
+  deployment_scale:
+    phase_number: 3
+    objective: |
+      Institutionalize the solution with observability, feedback, and
+      continuous improvement.
+
+    duration: "Ongoing (with quarterly reviews)"
+
+    key_practices:
+      built_in_retraining_cadence:
+        description: |
+          Architect for periodic model updates; expect change.
+
+        guidance: |
+          - Design retraining pipeline from day one
+          - Schedule regular retraining (monthly/quarterly)
+          - Automate where possible
+          - Version all models and data
+          - Track performance before/after retraining
+
+        retraining_triggers:
+          - "Scheduled (time-based)"
+          - "Performance drift detected"
+          - "New data available (volume threshold)"
+          - "Workflow or population changes"
+          - "Errors accumulate beyond threshold"
+
+      drift_and_distribution_monitoring:
+        description: |
+          Alert on shifts in feature or label distributions; trigger review
+          if dev/test alignment breaks.
+
+        guidance: |
+          - Monitor input feature distributions
+          - Track prediction distributions
+          - Compare to training data baseline
+          - Alert on statistically significant shifts
+          - Investigate root cause of drift
+
+        monitoring_techniques:
+          - "Statistical tests (KS test, chi-square)"
+          - "Population Stability Index (PSI)"
+          - "Feature importance changes"
+          - "Prediction distribution changes"
+          - "Performance degradation over time"
+
+      feedback_ingestion_loop:
+        description: |
+          Log and categorize every human override or AI failure; feed this
+          data into the retraining backlog.
+
+        guidance: |
+          - Capture all human corrections and overrides
+          - Require brief reason for override
+          - Categorize feedback by error type
+          - Prioritize common or critical errors
+          - Incorporate feedback into next training cycle
+
+        feedback_sources:
+          - "Human overrides and corrections"
+          - "Reported errors or bugs"
+          - "User satisfaction surveys"
+          - "Clinical incident reports"
+          - "Audit findings"
+
+      metric_level_rollback_guards:
+        description: |
+          Establish automatic rollback or fallback if primary metric degrades
+          beyond thresholds.
+
+        guidance: |
+          - Define acceptable performance bounds
+          - Implement automated monitoring
+          - Trigger alerts on threshold breach
+          - Enable one-click rollback to previous version
+          - Require root cause analysis before re-deployment
+
+        rollback_criteria:
+          - "Primary metric drops below baseline"
+          - "Safety events increase"
+          - "User override rate exceeds threshold"
+          - "System errors or downtime"
+          - "Equity metrics show bias"
+
+      measure_true_impact:
+        description: |
+          Track real operational and clinical outcomes: adoption, time savings,
+          throughput, satisfaction, and safety events—not just AUC or accuracy.
+
+        guidance: |
+          - Define impact metrics before deployment
+          - Measure at patient/workflow level, not just model level
+          - Compare to baseline (pre-AI)
+          - Track leading and lagging indicators
+          - Report to stakeholders regularly
+
+        outcome_categories:
+          operational_efficiency:
+            - "Time saved per case"
+            - "Throughput increase"
+            - "Resource utilization"
+            - "Cost per case"
+
+          clinical_quality:
+            - "Diagnosis accuracy in practice"
+            - "Treatment timeliness"
+            - "Adverse events prevented"
+            - "Patient outcomes (readmissions, mortality)"
+
+          adoption_satisfaction:
+            - "Active usage rate"
+            - "User satisfaction scores"
+            - "Training completion"
+            - "Override frequency"
+
+          roi:
+            - "Financial impact (cost savings, revenue)"
+            - "Capacity gained (FTE equivalent)"
+            - "Quality metric improvement"
+
+    deliverables:
+      - Deployment plan with rollout schedule
+      - Monitoring dashboard and alert configuration
+      - Retraining pipeline and schedule
+      - Quarterly performance review
+      - Continuous improvement backlog
+
+    approval_gates:
+      - Quarterly review by Clinical Lead
+      - Annual review by Executive Sponsor
+      - Governance audit (annually or on-trigger)
+      - Retraining approval by Product Manager
+
+  # --------------------------------------------------------------------------
+  # Phase 4: Organizational Enablement & Capability
+  # --------------------------------------------------------------------------
+  organizational_enablement:
+    phase_number: 4
+    objective: |
+      Build the environment where Product Managers and teams can iterate,
+      learn, and deliver safely at speed.
+
+    duration: "Ongoing organizational investment"
+
+    key_practices:
+      train_pms_in_ng_style_thinking:
+        description: |
+          Embed habits of fast prototyping, metric-driven iteration, and error
+          analysis into PM onboarding.
+
+        guidance: |
+          - Include Andrew Ng principles in PM training
+          - Teach error analysis methodology
+          - Practice metric selection exercises
+          - Case studies of rapid iteration successes
+          - Emphasize learning over perfection
+
+        training_topics:
+          - "Rapid prototyping and throwaway models"
+          - "Primary metric selection"
+          - "Error analysis and categorization"
+          - "Human-level benchmarking"
+          - "Iterative development methodology"
+          - "Data-driven decision making"
+
+      shorten_feedback_loops:
+        description: |
+          Compress time between prototype, decision, and pilot—enable
+          lightweight approvals and fast toggles.
+
+        guidance: |
+          - Streamline approval processes for low-risk experiments
+          - Enable feature flags for rapid testing
+          - Automate deployment pipelines
+          - Reduce meeting overhead
+          - Empower teams to make reversible decisions
+
+        process_improvements:
+          - "Lightweight approval for throwaway prototypes"
+          - "Pre-approved pilot protocols"
+          - "Automated testing and deployment"
+          - "Async decision-making where possible"
+          - "Clear escalation paths only for high-risk"
+
+      empower_decision_making:
+        description: |
+          Provide clear guardrails so PMs can pivot or experiment without
+          bureaucratic delays.
+
+        guidance: |
+          - Define decision authority clearly
+          - Create "safe to fail" zones for experimentation
+          - Require escalation only for safety/compliance risks
+          - Trust PMs within budget and scope
+          - Celebrate smart pivots based on data
+
+        empowerment_framework:
+          pm_can_decide:
+            - "Prototype approaches and tools"
+            - "Pilot scope and timeline (within program)"
+            - "Feature prioritization"
+            - "Iteration strategy based on metrics"
+            - "Resource allocation within budget"
+
+          requires_escalation:
+            - "Patient safety concerns"
+            - "Compliance or regulatory issues"
+            - "Scope changes affecting budget >20%"
+            - "Strategic pivots outside program charter"
+            - "Equity or bias concerns"
+
+      cross_functional_error_reviews:
+        description: |
+          After major misclassifications, convene clinical, DS, and UX leads
+          to diagnose root causes collaboratively.
+
+        guidance: |
+          - Schedule reviews after significant errors
+          - Include all relevant disciplines
+          - Focus on learning, not blame
+          - Document findings and actions
+          - Share learnings across programs
+
+        review_structure:
+          - "Error presentation and context"
+          - "Root cause analysis (5 whys)"
+          - "Brainstorm potential solutions"
+          - "Prioritize solutions by impact"
+          - "Assign owners and timelines"
+          - "Document and share learnings"
+
+      ai_thinking_reviews_at_stage_gates:
+        description: |
+          Before advancing, confirm AI thinking principles are being followed.
+
+        guidance: |
+          - Review at each lifecycle phase transition
+          - Use checklist to verify principles
+          - Require evidence of metric-driven decisions
+          - Validate error analysis is guiding work
+          - Ensure deployment domain alignment
+
+        stage_gate_questions:
+          - "Are we optimizing the right metric?"
+          - "Did error analysis guide our next step?"
+          - "Is the deployment domain still valid?"
+          - "Are we set up to iterate again if needed?"
+          - "Have we learned from failures?"
+          - "Is human-in-the-loop working as designed?"
+
+      promote_fast_failure_fast_learning_culture:
+        description: |
+          Celebrate discovery and learning cycles over perfection; reward
+          transparency about errors.
+
+        guidance: |
+          - Share failure stories openly
+          - Reward teams who pivot based on data
+          - Celebrate learning milestones, not just launches
+          - Encourage experimentation
+          - Make it safe to report errors
+
+        cultural_practices:
+          - "Monthly 'Learning from Failures' showcases"
+          - "Recognize pivots that saved resources"
+          - "Share error analyses across teams"
+          - "Celebrate hypothesis invalidation"
+          - "Reward transparency and honesty"
+
+# ============================================================================
+# III. Governance, Metrics & Safety
+# ============================================================================
+
+governance_metrics_safety:
+  human_in_the_loop_assurance:
+    requirement: "Required for all high-risk use cases"
+    description: |
+      AI systems that impact patient care or high-stakes decisions must include
+      human oversight and intervention capabilities.
+
+    implementation:
+      - "Define human review points in workflow"
+      - "Provide confidence scores to guide human review"
+      - "Enable easy override without friction"
+      - "Log all human decisions for analysis"
+      - "Track override rates as quality metric"
+
+    risk_tiers:
+      high_risk:
+        - "Direct patient care decisions"
+        - "Diagnostic or treatment recommendations"
+        - "Resource allocation affecting care"
+        - "Safety-critical systems"
+
+      medium_risk:
+        - "Administrative decisions with patient impact"
+        - "Workflow optimization affecting care quality"
+        - "Predictive models informing care planning"
+
+      low_risk:
+        - "Operational efficiency without patient impact"
+        - "Administrative automation"
+        - "Reporting and analytics"
+
+  equity_fairness_reviews:
+    requirement: "Bias detection across demographic subgroups during pilot and scale phases"
+    description: |
+      All AI systems must be evaluated for fairness and equity across
+      demographic groups before deployment and continuously monitored.
+
+    evaluation_dimensions:
+      - "Age groups"
+      - "Race and ethnicity"
+      - "Sex and gender"
+      - "Socioeconomic status (zip code proxy)"
+      - "Language preference"
+      - "Insurance type"
+      - "Geographic location (urban/rural)"
+
+    metrics_by_subgroup:
+      - "Sensitivity and specificity"
+      - "Positive predictive value"
+      - "False positive and false negative rates"
+      - "Access and utilization rates"
+      - "Benefit realization"
+
+    review_frequency:
+      - "Pre-deployment (pilot analysis)"
+      - "Post-deployment (first 30 days)"
+      - "Quarterly ongoing"
+      - "Annually comprehensive"
+      - "On-trigger (if concerns raised)"
+
+  model_monitoring:
+    requirement: "Automated alerts for performance drift and governance logs for auditability"
+    description: |
+      All deployed models must have monitoring infrastructure that tracks
+      performance, drift, and operational metrics.
+
+    monitoring_categories:
+      performance_metrics:
+        - "Accuracy, sensitivity, specificity"
+        - "AUC and calibration"
+        - "Prediction distribution"
+        - "Confidence score distribution"
+
+      drift_detection:
+        - "Feature distribution shifts"
+        - "Label distribution shifts"
+        - "Prediction distribution shifts"
+        - "Population demographic shifts"
+
+      operational_metrics:
+        - "Prediction volume and latency"
+        - "System uptime and errors"
+        - "Human override rates"
+        - "User satisfaction"
+
+      audit_trail:
+        - "All predictions logged with timestamp"
+        - "Model version for each prediction"
+        - "Input features logged (de-identified)"
+        - "Human overrides and reasons"
+        - "Model retraining events"
+
+    alert_thresholds:
+      critical:
+        - "Performance drops >10% from baseline"
+        - "Equity metrics show bias >5% difference"
+        - "System errors affecting >1% predictions"
+        - "Safety events reported"
+
+      warning:
+        - "Performance drops 5-10% from baseline"
+        - "Drift metrics exceed 2 standard deviations"
+        - "Override rates increase >20%"
+        - "User satisfaction drops"
+
+  primary_kpi_categories:
+    description: |
+      All AI programs must define metrics across these four categories.
+
+    categories:
+      operational_efficiency:
+        description: "Time saved, throughput, resource utilization"
+        example_metrics:
+          - "Time saved per case (minutes)"
+          - "Cases processed per day"
+          - "Staff FTE efficiency gain"
+          - "Resource utilization improvement (%)"
+          - "Workflow steps reduced"
+
+      clinical_quality:
+        description: "Accuracy, safety events avoided, outcomes"
+        example_metrics:
+          - "Diagnostic accuracy in practice"
+          - "Adverse events prevented (count)"
+          - "Treatment delays reduced (days)"
+          - "Patient outcomes (readmission rate, mortality)"
+          - "Guideline adherence improvement (%)"
+
+      adoption_satisfaction:
+        description: "Active use rates, clinician feedback"
+        example_metrics:
+          - "Active user rate (%)"
+          - "Daily/weekly active usage"
+          - "User satisfaction score (1-5)"
+          - "Net Promoter Score"
+          - "Training completion rate"
+          - "Override rate (should be low but not zero)"
+
+      roi:
+        description: "Financial or capacity impact"
+        example_metrics:
+          - "Cost savings per year ($)"
+          - "Cost per case reduction ($)"
+          - "Revenue impact ($)"
+          - "Capacity gained (FTE equivalent)"
+          - "Return on investment (%)"
+          - "Payback period (months)"
+
+    metric_selection_guidance:
+      - "Choose 1 primary metric per category"
+      - "Ensure metrics are measurable in operations"
+      - "Align with organizational priorities"
+      - "Track leading and lagging indicators"
+      - "Report regularly to stakeholders"
+
+# ============================================================================
+# IV. Example: Radiology Nodule Detection Assistant
+# ============================================================================
+
+example_radiology_nodule:
+  name: "Radiology Nodule Detection Assistant"
+  goal: |
+    Automatically flag imaging studies likely requiring follow-up for
+    suspected lung nodules.
+
+  timeline:
+    week_1_2_discovery:
+      stage: "Discovery/Prototype"
+      duration: "Weeks 1-2"
+      key_steps:
+        - "Build baseline classifier on existing dataset"
+        - "Define primary metric: sensitivity at 90% specificity"
+        - "Conduct error analysis of false negatives/positives"
+        - "Identify high-value fixes (e.g., better small nodule detection)"
+        - "Estimate effort and ROI"
+        - "Decision: Proceed to pilot"
+
+      outputs:
+        - "Baseline: 85% sensitivity at 90% specificity"
+        - "Top 3 error categories identified"
+        - "Estimated improvement potential: 90% sensitivity achievable"
+
+    month_1_3_pilot:
+      stage: "Small Pilot"
+      duration: "Months 1-3"
+      key_steps:
+        - "Run in silent mode (parallel to radiologists)"
+        - "Collect disagreement data (AI vs. human)"
+        - "Analyze artifacts and quality issues"
+        - "Retrain model based on error analysis"
+        - "Test in shadow mode (AI visible to radiologists)"
+        - "Collect usability feedback"
+
+      outputs:
+        - "Improved sensitivity: 89% at 90% specificity"
+        - "Override rate: 12% (acceptable)"
+        - "Radiologist satisfaction: 4.2/5"
+        - "Time savings: 15% reduction in review time"
+
+    month_4_6_deployment:
+      stage: "Read-Mode Deployment"
+      duration: "Months 4-6"
+      key_steps:
+        - "Integrate with radiologist workflow"
+        - "Require confirmation for all flagged studies"
+        - "Monitor override rates and reasons"
+        - "Track drift and confidence distribution"
+        - "Measure time-to-diagnosis"
+        - "Expand to additional modalities"
+
+      outputs:
+        - "Deployed across 5 radiology units"
+        - "Active usage: 98% of eligible studies"
+        - "Override rate stable at 10%"
+        - "No missed critical findings"
+
+    month_7_plus_scale:
+      stage: "Full Integration"
+      duration: "Month 7+"
+      key_steps:
+        - "Automate low-risk triage (high confidence)"
+        - "Maintain drift monitoring"
+        - "Track real-world outcomes (missed cancer rate)"
+        - "Quarterly model retraining"
+        - "Annual equity audit"
+        - "Continuous improvement based on feedback"
+
+      outputs:
+        - "System-wide deployment"
+        - "25% reduction in radiologist review time"
+        - "Zero increase in missed cancer diagnoses"
+        - "Cost savings: $500K annually"
+
+  lessons_learned:
+    - "Early prototyping revealed small nodule detection as key improvement area"
+    - "Silent mode pilot caught quality issues before impacting workflow"
+    - "Radiologist feedback critical for usability and trust"
+    - "Continuous monitoring detected drift from scanner upgrade"
+    - "Quarterly retraining maintained performance"
+
+# ============================================================================
+# V. Core Mindsets for Geisinger AI Product Managers
+# ============================================================================
+
+core_mindsets:
+  description: |
+    Seven fundamental principles that guide all AI Product Manager activities.
+
+  mindsets:
+    prototype_rapidly:
+      title: "Prototype rapidly → learn through failure"
+      description: |
+        Build fast, fail fast, learn fast. Throwaway prototypes reveal insights
+        that months of planning cannot.
+
+      practices:
+        - "Spend days, not weeks, on first prototype"
+        - "Embrace 'good enough' for learning"
+        - "Treat every prototype as disposable"
+        - "Focus on learning, not perfection"
+        - "Use failures to guide next steps"
+
+    anchor_on_metric:
+      title: "Anchor on a single measurable metric → guide all iteration"
+      description: |
+        Define success upfront with one primary metric. Let data, not opinions,
+        drive decisions.
+
+      practices:
+        - "Choose metric before building"
+        - "Get stakeholder alignment on metric"
+        - "Measure metric in every iteration"
+        - "Make decisions based on metric movement"
+        - "Adjust metric if it misaligns with goals"
+
+    analyze_errors_relentlessly:
+      title: "Analyze errors relentlessly → data, not intuition, drives improvements"
+      description: |
+        Every error is a learning opportunity. Classify, count, prioritize,
+        and fix systematically.
+
+      practices:
+        - "Categorize every error by root cause"
+        - "Count errors in each category"
+        - "Estimate impact of potential fixes"
+        - "Prioritize highest-leverage improvements"
+        - "Validate that fixes work as expected"
+
+    keep_humans_in_control:
+      title: "Keep humans in control → safety, accountability, and adoption hinge on it"
+      description: |
+        AI assists, humans decide. Design for easy override and clear accountability.
+
+      practices:
+        - "Define human review points explicitly"
+        - "Make override easy and frictionless"
+        - "Clarify who is accountable for decisions"
+        - "Log human interventions for learning"
+        - "Track override rates as quality signal"
+
+    design_for_change:
+      title: "Design for change → data shifts, workflows evolve; AI must too"
+      description: |
+        Build for continuous improvement, not one-time deployment. Expect drift,
+        plan for retraining.
+
+      practices:
+        - "Architect retraining pipelines from start"
+        - "Monitor for drift continuously"
+        - "Version all models and data"
+        - "Plan for regular updates"
+        - "Expect workflows to change"
+
+    empower_decision_speed:
+      title: "Empower decision speed → PMs are the bottleneck; reduce drag"
+      description: |
+        Fast decisions beat perfect decisions. Reduce approval overhead,
+        enable experimentation.
+
+      practices:
+        - "Streamline approvals for low-risk work"
+        - "Pre-approve common experiment types"
+        - "Enable feature flags and toggles"
+        - "Trust teams within guardrails"
+        - "Escalate only true risks"
+
+    celebrate_learning:
+      title: "Celebrate learning → every iteration strengthens institutional capability"
+      description: |
+        Learning compounds. Share failures, reward pivots, build organizational muscle.
+
+      practices:
+        - "Share failure stories openly"
+        - "Reward teams who pivot on data"
+        - "Celebrate hypothesis invalidation"
+        - "Document and share learnings"
+        - "Make it safe to experiment"
+
+# ============================================================================
+# Agent Instructions
+# ============================================================================
+
+agent_instructions:
+  when_to_apply:
+    - "User is defining a new AI program or product"
+    - "User needs strategic guidance on AI product approach"
+    - "User is stuck on prioritization or iteration decisions"
+    - "User needs to structure a pilot or deployment plan"
+    - "User wants to understand AI product best practices"
+
+  how_to_use_framework:
+    approach: |
+      1. Understand Context:
+         - What phase is the program in? (Discovery, Pilot, Deployment, Scale)
+         - What problem are they trying to solve?
+         - What metrics have they defined?
+
+      2. Apply Relevant Principles:
+         - Reference appropriate lifecycle phase practices
+         - Emphasize core mindsets that apply
+         - Provide concrete examples from this blueprint
+
+      3. Guide Decision-Making:
+         - Ask about primary metric
+         - Encourage error analysis
+         - Suggest rapid iteration approach
+         - Remind about human-in-the-loop
+
+      4. Ensure Governance:
+         - Check equity and safety considerations
+         - Verify monitoring plan exists
+         - Confirm human oversight designed
+
+  common_scenarios:
+    new_program_ideation:
+      situation: "User wants to start new AI program"
+      guidance: |
+        - Help define problem and scope
+        - Guide metric selection (primary + secondary)
+        - Suggest rapid prototype approach
+        - Apply feasibility × ROI × defensibility filter
+        - Recommend starting small and iterating
+
+    stuck_in_pilot:
+      situation: "Pilot not progressing, unclear how to improve"
+      guidance: |
+        - Ask about error analysis: what errors are occurring?
+        - Review whether metric aligns with goals
+        - Suggest categorizing and counting errors
+        - Prioritize highest-impact fixes
+        - Recommend shorter iteration cycles
+
+    deployment_planning:
+      situation: "Ready to deploy, needs structure"
+      guidance: |
+        - Ensure monitoring plan is defined
+        - Verify retraining cadence planned
+        - Check rollback criteria established
+        - Confirm human-in-the-loop designed
+        - Review equity and safety analysis
+
+    organizational_capability:
+      situation: "How to build AI product muscle across org?"
+      guidance: |
+        - Reference organizational enablement practices
+        - Suggest PM training in Ng-style thinking
+        - Recommend shortening feedback loops
+        - Encourage cross-functional error reviews
+        - Promote fast failure culture
+
+  key_questions_to_ask:
+    discovery_phase:
+      - "What is the single most important metric for success?"
+      - "Can humans perform this task reliably?"
+      - "What would a throwaway prototype reveal?"
+      - "Do we have unique data or workflow advantages?"
+
+    pilot_phase:
+      - "What are the top 3 error categories?"
+      - "How often are you analyzing errors and iterating?"
+      - "What is the human override rate and why?"
+      - "Does performance match across demographic groups?"
+
+    deployment_phase:
+      - "How will you detect performance drift?"
+      - "When and how will you retrain the model?"
+      - "What triggers a rollback?"
+      - "How are you measuring real-world impact?"
+
+  integration_with_other_blueprints:
+    ai_discovery_form:
+      relationship: "Discovery Form documents the strategy and plan"
+      guidance: |
+        - Use this blueprint to inform Discovery Form content
+        - Apply lifecycle phases to timeline section
+        - Reference governance practices in risk section
+        - Use metrics framework for success measures
+
+    meta_blueprint:
+      relationship: "Meta-blueprint provides universal safety policies"
+      guidance: |
+        - Ensure strategy aligns with governance policies
+        - Reference equity and safety requirements
+        - Follow HITL and transparency standards
+
+    product_mgmt_blueprint:
+      relationship: "Product mgmt blueprint defines operational process"
+      guidance: |
+        - Coordinate with product management workflows
+        - Align phase gates and approvals
+        - Share documentation and reporting
+
+# ============================================================================
+# Visual One-Pager (ASCII Representation)
+# ============================================================================
+
+visual_framework:
+  title: "AI Product Manager Lifecycle Canvas"
+  description: |
+    Compact visual representation of the AI PM strategy for quick reference.
+
+  ascii_canvas: |
+    ┌─────────────────────────────────────────────────────────────────────┐
+    │                   AI PRODUCT MANAGER LIFECYCLE                       │
+    └─────────────────────────────────────────────────────────────────────┘
+
+    MISSION: Measurable improvements in outcomes, efficiency, and performance
+
+    ┌──────────────┬──────────────┬──────────────┬──────────────────────┐
+    │  DISCOVERY   │    PILOT     │  DEPLOYMENT  │  ORGANIZATIONAL      │
+    │  1-4 weeks   │  1-3 months  │   Ongoing    │  ENABLEMENT          │
+    ├──────────────┼──────────────┼──────────────┼──────────────────────┤
+    │ • Rapid      │ • Short      │ • Built-in   │ • Train PMs in       │
+    │   prototype  │   realistic  │   retraining │   Ng thinking        │
+    │ • Primary    │   pilots     │ • Drift      │ • Shorten feedback   │
+    │   metric     │ • Continuous │   monitoring │   loops              │
+    │ • Error      │   error      │ • Feedback   │ • Empower decisions  │
+    │   analysis   │   analysis   │   ingestion  │ • Error reviews      │
+    │ • Human      │ • Metric     │ • Rollback   │ • Stage gate checks  │
+    │   benchmark  │   adjustment │   guards     │ • Fast failure       │
+    │ • 3-filter   │ • Human-     │ • Measure    │   culture            │
+    │   (F/R/D)    │   machine    │   true       │                      │
+    │ • Domain-    │   handoff    │   impact     │                      │
+    │   aligned    │ • Guardrail  │              │                      │
+    │   splits     │   metrics    │              │                      │
+    └──────────────┴──────────────┴──────────────┴──────────────────────┘
+
+    GOVERNANCE & METRICS
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │ • HITL for high-risk  • Equity reviews  • Model monitoring           │
+    │ • KPIs: Operational Efficiency │ Clinical Quality │ Adoption │ ROI  │
+    └──────────────────────────────────────────────────────────────────────┘
+
+    CORE MINDSETS
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │ 1. Prototype rapidly          5. Design for change                   │
+    │ 2. Anchor on metric           6. Empower decision speed              │
+    │ 3. Analyze errors relentlessly 7. Celebrate learning                 │
+    │ 4. Keep humans in control                                            │
+    └──────────────────────────────────────────────────────────────────────┘
+
+    ROLES: AI PM • Clinical Lead • Data Scientist • MLOps • UX • Data Mgr
