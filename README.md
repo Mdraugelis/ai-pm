@@ -781,6 +781,259 @@ All AI programs must address:
 
 ---
 
+## 🤖 Product Manager Agent
+
+The **ProductManagerAgent** is the main agent class that orchestrates the entire Discovery process. It implements the 6-step Discovery Workflow and provides the primary interface for processing ServiceNow tickets.
+
+### Overview
+
+```python
+from src.agent.pm_agent import ProductManagerAgent
+
+# Initialize agent
+config = load_config("config/development.yaml")
+agent = ProductManagerAgent(config)
+
+# Process a ServiceNow ticket
+result = await agent.process_ticket(ticket_text)
+
+# Access generated form
+print(result.form['title'])
+print(f"Confidence: {result.confidence:.0%}")
+print(f"Steps completed: {result.steps_completed}")
+```
+
+### Key Features
+
+**Workflow Execution**:
+- Implements complete 6-step Discovery Workflow
+- Automatic iteration and self-correction
+- Comprehensive observability and tracing
+
+**Research Capabilities**:
+- Vendor research (company background, capabilities, healthcare experience)
+- Use case research (clinical context, best practices, evidence)
+- Knowledge synthesis (combining research into actionable insights)
+
+**Quality Assurance**:
+- Self-verification across 5 quality dimensions
+- Automatic issue correction
+- Confidence scoring for each output
+
+**Observability**:
+- Step-by-step execution tracing
+- Duration tracking
+- Detailed logging of all actions
+
+### Methods
+
+#### `process_ticket(ticket_text: str) -> ProcessingResult`
+
+Main entry point for processing ServiceNow tickets. Executes the full Discovery Workflow.
+
+**Arguments**:
+- `ticket_text`: Raw ServiceNow ticket text or user description
+
+**Returns**: `ProcessingResult` containing:
+- `form`: Complete AI Discovery Form (7 sections)
+- `trace_id`: Unique trace identifier
+- `verification`: Quality verification results
+- `duration_seconds`: Total processing time
+- `steps_completed`: List of completed workflow steps
+- `confidence`: Overall confidence score (0.0-1.0)
+- `requires_approval`: Whether human approval is needed
+
+**Example**:
+```python
+ticket = """
+ServiceNow Ticket INC0012345
+Department: Cardiology
+Title: Epic In Basket AI Implementation
+...
+"""
+
+result = await agent.process_ticket(ticket)
+
+if result.requires_approval:
+    print(f"Form ready for review (confidence: {result.confidence:.0%})")
+    print(f"Completed in {result.duration_seconds:.1f} seconds")
+```
+
+#### `extract_ticket_info(ticket_text: str) -> TicketInfo`
+
+Extract basic information from ServiceNow ticket (Step 1).
+
+**Returns**: `TicketInfo` with fields:
+- `ticket_id`, `vendor`, `technology`, `use_case`
+- `department`, `requestor`, `description`
+
+#### `research_vendor(vendor_name: str) -> Dict[str, Any]`
+
+Research AI vendor and technology (Step 2).
+
+**Returns**: Dict with vendor information:
+- Company background and AI focus areas
+- Key AI products and capabilities
+- Healthcare AI experience
+- Integration capabilities
+- Known risks or concerns
+- Sources (citations)
+
+#### `research_use_case(use_case: str, department: str) -> Dict[str, Any]`
+
+Research clinical/operational use case (Step 3).
+
+**Returns**: Dict with use case analysis:
+- Current workflow and pain points
+- How AI could help
+- Similar implementations (best practices)
+- Potential risks and challenges
+- Success metrics to consider
+- Sources (citations)
+
+#### `synthesize_knowledge(...) -> Dict[str, Any]`
+
+Synthesize vendor capabilities with use case needs (Step 4).
+
+**Returns**: Dict with synthesis:
+- How vendor capabilities map to use case needs
+- Key opportunities and benefits
+- Main risks and gaps
+- Critical questions to address
+- Recommended next steps
+
+#### `draft_discovery_form(...) -> Dict[str, Any]`
+
+Draft complete AI Discovery Form (Step 5).
+
+**Returns**: Dict with completed form:
+- `title`: Program title
+- `sections`: List of 7 sections with content
+
+#### `verify_form(form: Dict[str, Any]) -> Dict[str, Any]`
+
+Self-verify Discovery Form quality (Step 6).
+
+**Returns**: Verification result:
+- `passed`: Whether form passed quality checks
+- `overall_score`: Quality score (0.0-1.0)
+- `checks`: List of individual check results
+- `issues`: List of identified issues
+
+#### `correct_issues(form: Dict, verification: Dict) -> Dict[str, Any]`
+
+Correct identified issues in form.
+
+**Returns**: Corrected version of form
+
+### Observability
+
+The agent provides comprehensive tracing of all operations:
+
+```python
+# Get trace details
+trace = agent.get_trace(result.trace_id)
+
+# Trace contains:
+# - operation: Name of operation
+# - start_time, end_time: Timestamps
+# - steps: List of all workflow steps
+# - status: success/error
+# - metadata: Additional context
+```
+
+### Data Structures
+
+#### `TicketInfo`
+```python
+@dataclass
+class TicketInfo:
+    ticket_id: Optional[str]
+    vendor: Optional[str]
+    technology: Optional[str]
+    use_case: Optional[str]
+    department: Optional[str]
+    requestor: Optional[str]
+    description: Optional[str]
+    raw_text: str
+```
+
+#### `ResearchContext`
+```python
+@dataclass
+class ResearchContext:
+    vendor_info: Dict[str, Any]
+    use_case_info: Dict[str, Any]
+    synthesis: Dict[str, Any]
+    sources: List[str]
+```
+
+#### `ProcessingResult`
+```python
+@dataclass
+class ProcessingResult:
+    form: Dict[str, Any]
+    trace_id: str
+    verification: Dict[str, Any]
+    duration_seconds: float
+    steps_completed: List[str]
+    confidence: float
+    requires_approval: bool
+```
+
+### Testing
+
+**Unit Tests**: `tests/unit/test_pm_agent.py`
+- Tests for each individual method
+- Mock LLM responses for fast execution
+- 30+ test cases covering normal and edge cases
+
+**Integration Tests**: `tests/integration/test_pm_agent_integration.py`
+- End-to-end workflow testing
+- Real LLM integration (requires API key)
+- Multiple realistic ticket scenarios
+- Performance and concurrency tests
+
+**Run Tests**:
+```bash
+# Unit tests (fast, no API calls)
+pytest tests/unit/test_pm_agent.py -v
+
+# Integration tests (requires ANTHROPIC_API_KEY)
+pytest tests/integration/test_pm_agent_integration.py -v -m integration
+
+# Performance tests
+pytest tests/integration/test_pm_agent_integration.py -v -m performance
+```
+
+### Configuration
+
+The agent uses configuration from `config/development.yaml`:
+
+```yaml
+agent:
+  model: "claude-sonnet-4-5-20250929"
+  max_iterations: 10
+  confidence_threshold: 0.7
+
+blueprints:
+  directory: "docs/blueprints"
+  templates:
+    ai_discovery_form: "ai-discovery-form.yaml"
+  workflows:
+    discovery: "discovery-workflow.yaml"
+```
+
+### Related Files
+
+- **Implementation**: `src/agent/pm_agent.py` (~900 lines)
+- **Tests**: `tests/unit/test_pm_agent.py`, `tests/integration/test_pm_agent_integration.py`
+- **Workflow Blueprint**: `docs/blueprints/discovery-workflow.yaml`
+- **Form Template**: `docs/blueprints/ai-discovery-form.yaml`
+- **Strategic Framework**: `docs/blueprints/ai-product-manager-strategy.yaml`
+
+---
+
 ## 🔄 Discovery Workflow
 
 The agent follows a structured 6-step workflow to generate high-quality AI Discovery Forms from ServiceNow tickets or user input. This workflow implements the Gather → Plan → Act → Verify → Iterate pattern.

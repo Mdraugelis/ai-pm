@@ -1,0 +1,70 @@
+{
+  "form": {
+    "title": "Epic InBasket AI - Prioritization of Physician Electronic Inbox Messages",
+    "sections": [
+      {
+        "id": "basic_information",
+        "content": "## Basic Information\n\n**Program Name:** Epic InBasket AI - Message Prioritization\n\n**Requesting Department:** Cardiology\n\n**Program Owner:** [To be assigned]\n\n**Submission Date:** [Current date]\n\n**Ticket Reference:** INC0012345\n\n**Executive Summary:**\nImplementation of Epic's AI-powered InBasket message prioritization system to identify urgent clinical communications and reduce physician inbox processing time. This solution uses machine learning to analyze incoming messages and surface time-sensitive patient care communications."
+      },
+      {
+        "id": "use_case_description",
+        "content": "## Use Case Description\n\n**Primary Objective:**\nReduce physician cognitive burden by automatically prioritizing electronic inbox messages based on clinical urgency.\n\n**Target Users:**\n- Cardiology physicians\n- Care team members managing InBasket workflows\n\n**Expected Outcomes:**\n- Reduced time spent processing inbox messages\n- Faster identification of urgent clinical communications\n- Improved patient safety through timely response to critical messages\n\n**Current State:**\nPhysicians manually review all InBasket messages in chronological order, leading to potential delays in identifying urgent communications.\n\n**Proposed Solution:**\nEpic's AI model analyzes message content, sender, and context to assign priority scores and surface urgent items."
+      },
+      {
+        "id": "ai_technology_details",
+        "content": "## AI Technology Details\n\n**Vendor:** Epic Systems Corporation\n\n**AI Model Type:** Machine Learning - Natural Language Processing\n\n**Training Data:** Epic's aggregated InBasket message data across healthcare systems\n\n**Model Transparency:** Proprietary Epic model with limited explainability\n\n**Integration Method:** Native Epic EHR functionality\n\n**Data Flow:**\n1. Incoming messages enter Epic InBasket\n2. AI model analyzes message content and metadata\n3. Priority score assigned\n4. Messages re-ordered in physician view"
+      },
+      {
+        "id": "clinical_safety_assessment",
+        "content": "## Clinical Safety Assessment\n\n**Patient Impact Level:** HIGH - Directly affects clinical communication and patient care decisions\n\n**Safety Risks Identified:**\n- False negatives: Urgent messages incorrectly deprioritized\n- Over-reliance on automation reducing physician vigilance\n- Missed critical communications during system errors\n\n**Mitigation Strategies Required:**\n- Human-in-the-loop verification for high-stakes communications\n- Regular accuracy monitoring and auditing\n- Physician training on AI limitations\n- Fallback procedures for system failures\n\n**Regulatory Considerations:**\n- FDA classification assessment needed\n- HIPAA compliance verification required\n- Clinical decision support documentation"
+      },
+      {
+        "id": "risk_assessment",
+        "content": "## Risk Assessment\n\n**Data Privacy Risks:**\n- PHI processing by AI model\n- Training data provenance unknown\n- Potential data sharing with Epic\n\n**Bias Risks:**\n- Model may not generalize to Geisinger population\n- Potential bias in message type prioritization\n- Unknown demographic considerations in training data\n\n**Operational Risks:**\n- Workflow disruption during implementation\n- Physician resistance to AI-driven prioritization\n- System downtime affecting message access\n\n**Risk Mitigation:**\n- BAA review with Epic\n- Bias testing on Geisinger data\n- Phased rollout with monitoring\n- Comprehensive training program"
+      },
+      {
+        "id": "stakeholder_analysis",
+        "content": "## Stakeholder Analysis\n\n**Primary Stakeholders:**\n- Cardiology Department (Requesting)\n- Clinical Informatics\n- IT Security & Privacy\n- Epic Application Team\n\n**Approvals Required:**\n- Clinical Safety Officer\n- CISO (Data Privacy)\n- Medical Executive Committee\n- AI Governance Board\n\n**Implementation Partners:**\n- Epic Systems (Vendor)\n- Geisinger IT Operations\n- Change Management Team"
+      },
+      {
+        "id": "success_metrics",
+        "content": "## Success Metrics\n\n**Primary Metrics:**\n1. Reduction in inbox processing time (target: 20% decrease)\n2. Time to first response for urgent messages (target: 30% improvement)\n3. Physician satisfaction scores\n\n**Safety Metrics:**\n1. False negative rate for urgent messages (target: <1%)\n2. Missed critical communication incidents\n3. User override frequency\n\n**Monitoring Plan:**\n- Weekly accuracy audits for first 3 months\n- Monthly safety reviews\n- Quarterly stakeholder feedback sessions"
+      },
+      {
+        "id": "next_steps",
+        "content": "## Next Steps & Governance Process\n\n**Immediate Actions Required:**\n1. \u2705 Discovery Form completion (This document)\n2. \u23f3 Clinical Safety Officer review\n3. \u23f3 Privacy Impact Assessment\n4. \u23f3 Epic vendor documentation request\n\n**Governance Pathway:**\n1. Technical review by AI Governance Board\n2. Clinical safety assessment\n3. Privacy and security review\n4. Final approval by Medical Executive Committee\n\n**Estimated Timeline:**\n- Governance review: 4-6 weeks\n- Pilot implementation: 2-3 months post-approval\n- Full rollout: 6-12 months\n\n**Human Approval Required:**\nThis Discovery Form requires review and approval by the AI Governance Board before proceeding to detailed assessment phase."
+      }
+    ]
+  },
+  "metadata": {
+    "trace_id": "process_ticket_1760064203.255194",
+    "duration_seconds": 358.609248,
+    "confidence": 1.0,
+    "steps_completed": [
+      "extract_basics",
+      "research_vendor",
+      "research_use_case",
+      "synthesize",
+      "draft_form",
+      "self_verify",
+      "correct_issues"
+    ]
+  },
+  "verification": {
+    "passed": true,
+    "overall_score": 1.0,
+    "checks": [
+      {
+        "dimension": "completeness",
+        "score": 1.0,
+        "passed": true
+      },
+      {
+        "dimension": "sections",
+        "score": 1.0,
+        "passed": true
+      }
+    ],
+    "issues": []
+  }
+}
