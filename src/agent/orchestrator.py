@@ -268,11 +268,13 @@ class AgentOrchestrator:
         This is PURE Geisinger - no SDK involved.
         Gathers from memory, databases, blueprints, etc.
 
+        Enhanced to extract and prioritize user-uploaded blueprints.
+
         Args:
             context: Current context
 
         Returns:
-            Enriched context
+            Enriched context with organized blueprint knowledge
         """
         # Placeholder - will connect to memory manager, database, etc.
         gathered = context.copy()
@@ -283,6 +285,27 @@ class AgentOrchestrator:
         # Add available tools (from tool registry)
         if self.tool_registry:
             gathered["available_tools"] = self.tool_registry.get_tool_ids()
+
+        # Organize blueprint knowledge with user blueprints prioritized
+        blueprints = context.get("blueprints", {})
+        if blueprints:
+            # Extract user blueprints if available
+            user_blueprints = blueprints.get("user_blueprints", {})
+
+            # Create organized blueprint context
+            gathered["blueprint_context"] = {
+                "has_user_blueprints": bool(user_blueprints.get("count", 0)),
+                "user_blueprint_count": user_blueprints.get("count", 0),
+                "user_blueprint_subtypes": list(user_blueprints.get("by_subtype", {}).keys()),
+                "all_blueprints": blueprints
+            }
+
+            # Log blueprint availability
+            logger.info(
+                "Blueprint context gathered",
+                user_blueprints=user_blueprints.get("count", 0),
+                subtypes=list(user_blueprints.get("by_subtype", {}).keys()) if user_blueprints else []
+            )
 
         return gathered
 
@@ -323,22 +346,188 @@ class AgentOrchestrator:
         """
         ACT step: Execute the plan
 
-        This is PURE Geisinger - executes tools, manages state.
-        No SDK involved.
+        For specialized modes, uses LLM to generate content based on plan.
+        For tool execution, will use tool registry (future implementation).
 
         Args:
             plan: Plan to execute
             context: Execution context
 
         Returns:
-            Execution result
+            Execution result with generated content
         """
-        # Placeholder - will execute tools from registry
-        result = {"status": "executed", "plan_steps": len(plan.steps), "output": {}}
+        logger.info("Executing plan", steps=len(plan.steps))
 
-        logger.info("Plan executed", steps=len(plan.steps))
+        # Build execution prompt from plan
+        execution_prompt = self._build_execution_prompt(plan, context)
 
-        return result
+        # Use LLM to execute the plan
+        try:
+            response = await self.llm.ask_question(execution_prompt, context)
+
+            result = {
+                "status": "success",
+                "response": response,
+                "plan_steps_executed": len(plan.steps),
+            }
+
+            logger.info(
+                "Plan executed successfully",
+                steps=len(plan.steps),
+                response_length=len(response),
+            )
+
+            return result
+
+        except Exception as e:
+            logger.error("Plan execution failed", error=str(e))
+            return {
+                "status": "failed",
+                "error": str(e),
+                "plan_steps_executed": 0,
+            }
+
+    def _build_execution_prompt(
+        self, plan: Plan, context: Dict[str, Any]
+    ) -> str:
+        """
+        Build execution prompt from plan and context
+
+        Args:
+            plan: Plan to execute
+            context: Execution context
+
+        Returns:
+            Prompt for LLM to execute the plan
+        """
+        # Extract task description
+        task = context.get("task")
+        task_description = task.description if task else "Complete the task"
+
+        # Extract mode and documents
+        mode = context.get("mode", "general")
+        documents = context.get("documents", [])
+        blueprints = context.get("blueprints", {})
+
+        # Build prompt
+        prompt = f"""Task: {task_description}
+
+Mode: {mode}
+
+Plan to execute:
+{plan.reasoning}
+
+Steps:
+"""
+
+        # Add plan steps
+        for i, step in enumerate(plan.steps, 1):
+            prompt += f"{i}. {step.get('action', 'Execute step')}\n"
+
+        # Add context information
+        if documents:
+            prompt += f"\n\nContext documents available: {len(documents)}\n"
+            for doc in documents:
+                prompt += f"- {doc.get('type')}: {len(doc.get('content', ''))} characters\n"
+
+        # Add blueprints as guidance with user blueprints prioritized
+        if blueprints:
+            prompt += "\n\n=== STRATEGIC GUIDANCE FROM BLUEPRINTS ===\n"
+
+            # Check for user-uploaded blueprints
+            user_blueprints = blueprints.get("user_blueprints", {})
+            has_user_blueprints = user_blueprints.get("count", 0) > 0
+
+            if has_user_blueprints:
+                prompt += "\n🎯 **USER-UPLOADED KNOWLEDGE** (PRIORITY - Use these first!):\n"
+                by_subtype = user_blueprints.get("by_subtype", {})
+
+                # Organize by subtype
+                for subtype, docs in by_subtype.items():
+                    prompt += f"\n  {subtype.upper()}S ({len(docs)} documents):\n"
+                    for doc in docs[:3]:  # Show first 3 per type
+                        filename = doc.get("filename", "Unknown")
+                        metadata = doc.get("metadata", {})
+
+                        # Parse metadata if string
+                        if isinstance(metadata, str):
+                            try:
+                                import json
+                                metadata = json.loads(metadata)
+                            except:
+                                metadata = {}
+
+                        summary = metadata.get("summary", "")
+                        key_concepts = metadata.get("key_concepts", [])
+
+                        prompt += f"    - {filename}\n"
+                        if summary:
+                            prompt += f"      Summary: {summary[:150]}...\n"
+                        if key_concepts:
+                            prompt += f"      Key concepts: {', '.join(key_concepts[:5])}\n"
+
+                    if len(docs) > 3:
+                        prompt += f"    ... and {len(docs) - 3} more {subtype}s\n"
+
+                prompt += "\n  ⚠️ IMPORTANT: User-uploaded blueprints take precedence over default guidance.\n"
+
+            # Add YAML/default blueprints
+            prompt += "\n📚 **DEFAULT KNOWLEDGE BASE**:\n"
+
+            # Domain knowledge
+            if "domain_knowledge" in blueprints:
+                domain = blueprints["domain_knowledge"]
+                policies = domain.get("policies", [])
+                guidelines = domain.get("guidelines", [])
+
+                if policies:
+                    # Show first few user policies if any
+                    user_policies = [p for p in policies if p.get("source") == "user_upload"]
+                    yaml_policies = [p for p in policies if p.get("source") != "user_upload"]
+
+                    if yaml_policies:
+                        prompt += f"  - {len(yaml_policies)} standard policies\n"
+
+                if guidelines:
+                    user_guidelines = [g for g in guidelines if g.get("source") == "user_upload"]
+                    yaml_guidelines = [g for g in guidelines if g.get("source") != "user_upload"]
+
+                    if yaml_guidelines:
+                        prompt += f"  - {len(yaml_guidelines)} standard guidelines\n"
+
+            # Other blueprints (workflow, templates)
+            other_blueprints = [k for k in blueprints.keys()
+                              if k not in ["user_blueprints", "domain_knowledge", "meta"]]
+            if other_blueprints:
+                for bp_name in other_blueprints:
+                    prompt += f"  - {bp_name}\n"
+
+        # Add mode-specific instructions
+        if mode == "ai_discovery":
+            prompt += """
+
+Please generate a comprehensive AI Discovery Form response following the guidance from the blueprints.
+Include all relevant sections and provide detailed, actionable information.
+Use markdown formatting for readability.
+"""
+        elif mode == "risk_assessment":
+            prompt += """
+
+Please provide a detailed risk assessment following the governance guidelines.
+Include risk identification, impact analysis, and mitigation recommendations.
+Use markdown formatting for clarity.
+"""
+        elif mode == "poc_planning":
+            prompt += """
+
+Please create a detailed proof-of-concept plan.
+Include timeline, resources, success criteria, and milestones.
+Use markdown formatting for readability.
+"""
+
+        prompt += "\n\nPlease execute this plan now and provide the complete output."
+
+        return prompt
 
     async def _verify_result(
         self, result: Dict[str, Any], plan: Plan, context: Dict[str, Any]
@@ -401,6 +590,153 @@ class AgentOrchestrator:
         if self.blueprint_loader:
             return self.blueprint_loader.load_domain_blueprint(domain)
         return {}
+
+    async def execute_task_with_context(
+        self,
+        task: Task,
+        external_context: Dict[str, Any],
+    ) -> AgentResponse:
+        """
+        Execute task with external context from ConversationalAgent
+
+        Same agent loop as execute_task(), but accepts additional context:
+        - Conversation history
+        - User-uploaded documents
+        - Mode-specific blueprints
+
+        Args:
+            task: Task to execute
+            external_context: Context from ConversationalAgent containing:
+                - conversation: List of conversation turns
+                - mode: Operating mode
+                - documents: User-uploaded documents
+                - blueprints: Mode-specific blueprints as knowledge
+
+        Returns:
+            AgentResponse with result and trace
+        """
+        logger.info(
+            "Starting task with external context",
+            task_description=task.description,
+            mode=external_context.get("mode"),
+            conversation_turns=len(external_context.get("conversation", [])),
+            documents_count=len(external_context.get("documents", [])),
+        )
+
+        # Merge external context with standard context
+        context = {
+            **external_context,
+            "task": task,
+            "iteration": 0,
+            "tool_results": [],
+            "previous_attempts": [],
+        }
+
+        # Load blueprints if not provided
+        if "meta_blueprint" not in context:
+            context["meta_blueprint"] = await self._load_meta_blueprint()
+        if "domain_blueprint" not in context:
+            context["domain_blueprint"] = await self._load_domain_blueprint(
+                task.domain
+            )
+
+        # Initialize execution trace
+        trace = []
+        reasoning = []
+
+        # Agent loop (same as execute_task)
+        for iteration in range(self.max_iterations):
+            context["iteration"] = iteration
+
+            logger.info("Agent iteration", iteration=iteration)
+
+            # 1. GATHER context
+            gathered_context = await self._gather_context(context)
+            trace.append({
+                "step": "gather",
+                "iteration": iteration,
+                "context_summary": self._summarize_context(gathered_context),
+            })
+
+            # 2. PLAN approach (LLM decides what to do)
+            plan = await self._create_plan(task, gathered_context)
+            trace.append({
+                "step": "plan",
+                "iteration": iteration,
+                "plan": plan,
+                "confidence": plan.confidence,
+            })
+
+            reasoning.append(
+                f"Iteration {iteration}: {plan.reasoning} (confidence: {plan.confidence:.0%})"
+            )
+
+            # 3. ACT - Execute plan
+            execution_result = await self._execute_plan(plan, gathered_context)
+            trace.append({
+                "step": "execute",
+                "iteration": iteration,
+                "result": execution_result,
+            })
+
+            # 4. VERIFY - Self-check
+            verification = await self._verify_result(
+                execution_result, plan, gathered_context
+            )
+            trace.append({
+                "step": "verify",
+                "iteration": iteration,
+                "verification": verification,
+            })
+
+            # 5. ITERATE/ADAPT or COMPLETE
+            if verification.get("complete", False):
+                # Task complete!
+                logger.info(
+                    "Task completed successfully",
+                    iterations=iteration + 1,
+                    confidence=verification.get("confidence"),
+                )
+
+                return AgentResponse(
+                    status="SUCCESS",
+                    result=execution_result,
+                    verification=verification,
+                    trace=trace,
+                    reasoning=reasoning,
+                    requires_approval=verification.get("requires_approval", False),
+                    hitl_tier=verification.get("hitl_tier"),
+                )
+
+            elif verification.get("should_escalate", False):
+                # Escalate to human
+                logger.warning(
+                    "Task escalated",
+                    reason=verification.get("escalation_reason"),
+                    iterations=iteration + 1,
+                )
+
+                return AgentResponse(
+                    status="ESCALATED",
+                    result=execution_result,
+                    verification=verification,
+                    trace=trace,
+                    reasoning=reasoning,
+                )
+
+            else:
+                # Adapt and continue
+                context = self._adapt_context(context, verification)
+                logger.info("Adapting plan", issues=verification.get("issues"))
+
+        # Max iterations reached
+        logger.error("Max iterations reached", max_iterations=self.max_iterations)
+
+        return AgentResponse(
+            status="MAX_ITERATIONS",
+            trace=trace,
+            reasoning=reasoning,
+        )
 
     def _summarize_context(self, context: Dict[str, Any]) -> str:
         """Create context summary for trace"""
